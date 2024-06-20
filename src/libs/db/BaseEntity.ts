@@ -1,10 +1,10 @@
-import { Exclude } from "class-transformer";
+import { Exclude } from 'class-transformer';
 import {
   CreateDateColumn,
   Entity,
   UpdateDateColumn,
   VersionColumn,
-} from "typeorm";
+} from 'typeorm';
 
 @Entity()
 export class BaseEntity {
