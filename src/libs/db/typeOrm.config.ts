@@ -1,15 +1,15 @@
-import * as typeorm from "typeorm";
-import { config } from "dotenv";
-import { Config } from "../../config";
+import * as typeorm from 'typeorm';
+import { config } from 'dotenv';
+import { Config } from '../../config';
 
 config();
 
-console.log("====================================");
+console.log('====================================');
 console.log(Config.IS_PRODUCTION);
-console.log("====================================");
+console.log('====================================');
 
 export default new typeorm.DataSource({
-  type: "postgres",
+  type: 'postgres',
   host: Config.DATABASE_HOST,
   port: Config.DATABASE_PORT,
   database: Config.DATABASE_NAME,
@@ -18,7 +18,7 @@ export default new typeorm.DataSource({
   synchronize: Config.DATABASE_SYNC,
   logging: Config.DATABASE_LOGGING,
   // entities: [User, Quizzes, Questions, QuestionOptions], // (from Fisayo) remove this, i just did this to test the migration on dev
-  migrations: ["src/libs/db/migrations/*{.ts,.js}"],
+  migrations: ['src/libs/db/migrations/*{.ts,.js}'],
   // extra: {
   //   trustServerCertificate: true,
   // },

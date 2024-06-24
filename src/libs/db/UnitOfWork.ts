@@ -1,12 +1,12 @@
-import { writeConnection } from "./DatabaseModule";
+import { writeConnection } from './DatabaseModule';
 
 export class UnitOfWork {
   public async startTransaction(
     level?:
-      | "READ UNCOMMITTED"
-      | "READ COMMITTED"
-      | "REPEATABLE READ"
-      | "SERIALIZABLE"
+      | 'READ UNCOMMITTED'
+      | 'READ COMMITTED'
+      | 'REPEATABLE READ'
+      | 'SERIALIZABLE',
   ): Promise<void> {
     level
       ? await writeConnection.startTransaction(level)

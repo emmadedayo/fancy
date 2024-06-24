@@ -17,6 +17,7 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+.env
 
 # IDEs and editors
 /.idea
@@ -24,9 +25,10 @@ lerna-debug.log*
 .classpath
 .c9/
 *.launch
+.
 .settings/
 *.sublime-workspace
-
+src/libs/notification/firebase/fanzy.json
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
