@@ -6,7 +6,7 @@ import { UserEntity } from '../../../modules/user/entity/user.entity';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
-  onModuleInit() {
+  async onModuleInit() {
     // Resolve path to service account file
     const serviceAccountPath = path.join(
       __dirname,
@@ -23,13 +23,16 @@ export class FirebaseService implements OnModuleInit {
       );
       return;
     }
-
+    const configUrl = 'https://fanzty.nyc3.digitaloceanspaces.com/fanzy.json';
+    const response = await fetch(configUrl);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const firebaseConfig = await response.json();
     // Initialize Firebase Admin SDK
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const serviceAccount = require(serviceAccountPath);
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(firebaseConfig),
       });
       console.log('Firebase Admin SDK initialized successfully');
     } catch (error) {

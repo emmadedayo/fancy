@@ -29,19 +29,34 @@ class Configuration {
   readonly DATABASE_LOGGING = process.env.DATABASE_LOGGING === 'true';
 
   @IsString()
-  readonly DATABASE_HOST = process.env.DATABASE_HOST as string;
+  readonly DATABASE_HOST =
+    process.env.NODE_ENV === 'development'
+      ? (process.env.DATABASE_HOST as string)
+      : (process.env.PROD_DATABASE_HOST as string);
 
   @IsInt()
-  readonly DATABASE_PORT = Number(process.env.DATABASE_PORT);
+  readonly DATABASE_PORT =
+    process.env.NODE_ENV === 'development'
+      ? Number(process.env.DATABASE_PORT)
+      : Number(process.env.PROD_DATABASE_PORT);
 
   @IsString()
-  readonly DATABASE_NAME = process.env.DATABASE_NAME as string;
+  readonly DATABASE_NAME =
+    process.env.NODE_ENV === 'development'
+      ? (process.env.DATABASE_NAME as string)
+      : (process.env.PROD_DATABASE_NAME as string);
 
   @IsString()
-  readonly DATABASE_USER = process.env.DATABASE_USER as string;
+  readonly DATABASE_USER =
+    (process.env.NODE_ENV as string) === 'development'
+      ? (process.env.DATABASE_USER as string)
+      : (process.env.PROD_DATABASE_USER as string);
 
   @IsString()
-  readonly DATABASE_PASSWORD = process.env.DATABASE_PASSWORD as string;
+  readonly DATABASE_PASSWORD =
+    (process.env.NODE_ENV as string) === 'development'
+      ? (process.env.DATABASE_PASSWORD as string)
+      : (process.env.PROD_DATABASE_PASSWORD as string);
 
   @IsString()
   readonly JWT_SECRET = process.env.JWT_SECRET as string;
