@@ -10,10 +10,13 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
 # Copy the rest of the application code to the working directory
 COPY . .
+
+# Set environment variables from the .env file
+RUN set -a && source .env && set +a
 
 # Build the NestJS application
 RUN npm run build
