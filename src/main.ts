@@ -20,4 +20,4 @@ async function bootstrap() {
   //print the url
   console.log(`Application is running on: ${await app.getUrl()}/`);
 }
-bootstrap();
+bootstrap().then(() => console.log('Application is running'));

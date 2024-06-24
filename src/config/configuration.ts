@@ -82,6 +82,12 @@ class Configuration {
   @IsInt()
   readonly REDIS_PORT = Number(process.env.REDIS_PORT);
 
+  @IsString()
+  readonly REDIS_USERNAME = process.env.REDIS_USERNAME;
+
+  @IsString()
+  readonly REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+
   @IsInt()
   readonly CACHE_TTL = Number(process.env.CACHE_TTL);
 
