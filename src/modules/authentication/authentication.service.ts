@@ -68,7 +68,7 @@ export class AuthenticationService {
 
   async verifyWithEmail(data: VerifyCodeDto) {
     const userId = await this.cacheManager.get(data.email);
-    if (userId) {
+    if (!userId) {
       return BaseResponse.error('Invalid code', null, HttpStatus.BAD_REQUEST);
     }
     const user = await this.userRepository.findOne({ email: data.email });
@@ -122,7 +122,7 @@ export class AuthenticationService {
       return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
     }
     const code = generateCode();
-    await this.cacheManager.set(code, user.id, 120);
+    await this.cacheManager.set(user.email, code);
     await this.registrationQueue.add({
       code,
       user: user,
@@ -148,7 +148,7 @@ export class AuthenticationService {
       return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
     }
     const code = generateCode();
-    await this.cacheManager.set(code, user.id, 120);
+    await this.cacheManager.set(user.email, code);
     await this.registrationQueue.add(Config.RESET_PASSWORD_QUEUE, {
       code,
       user: user,
