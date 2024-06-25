@@ -16,7 +16,7 @@ async function bootstrap() {
     defaultVersion: [VERSION_NEUTRAL, '1'],
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  await app.listen(Config.PORT || 4500);
+  await app.listen(Config.PORT || 4500, '0.0.0.0');
   //print the url
   console.log(`Application is running on: ${await app.getUrl()}/`);
 }
