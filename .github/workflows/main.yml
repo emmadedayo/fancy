@@ -88,6 +88,7 @@ jobs:
             echo "CACHE_TTL=${{ secrets.CACHE_TTL }}" >> .env
             echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> .env
             echo "FIREBASE_CREDENTIALS=${{ secrets.FIREBASE_CREDENTIALS }}" >> .env
+            echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env
             # Run a new container from a new image
             docker run -d \
             --restart always \
