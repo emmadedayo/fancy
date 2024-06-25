@@ -56,7 +56,7 @@ export class AuthenticationService {
     });
     //return response
     return BaseResponse.success(
-      data,
+      null,
       'User created successfully',
       HttpStatus.CREATED,
     );
