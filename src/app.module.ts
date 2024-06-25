@@ -16,22 +16,18 @@ import { ImageUploadModule } from './modules/image-upload/image-upload.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { FundraisingModule } from './modules/fundraising/fundraising.module';
 import { FirebaseModule } from './libs/notification/firebase/firebase.module';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
-    // CacheModule.registerAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     store: redisStore,
-    //     host: configService.get('REDIS_HOST'),
-    //     port: configService.get('REDIS_PORT'),
-    //     ttl: configService.get('CACHE_TTL') || 3600,
-    //   }),
-    //   isGlobal: true,
-    // }),
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        type: 'single',
+        url: process.env.REDIS_URL,
+      }),
+    }),
     CacheModule.register({
       isGlobal: true,
       ttl: 500,

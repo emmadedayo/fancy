@@ -11,6 +11,12 @@ class Configuration {
   readonly CREATE_USER_QUEUE = 'create-user';
 
   @IsString()
+  readonly UPDATE_USER_CONSUMER = 'create-user-consumer';
+
+  @IsString()
+  readonly REDIS_URL = process.env.REDIS_URL;
+
+  @IsString()
   readonly SEND_POST_NOTIFICATION = 'send-post-notification';
 
   @IsString()
@@ -74,7 +80,7 @@ class Configuration {
   readonly CORS_ALLOWED_ORIGIN = process.env.CORS_ALLOWED_ORIGIN;
 
   @IsBoolean()
-  readonly IS_PRODUCTION = process.env.IS_PRODUCTION === 'true';
+  readonly IS_PRODUCTION = process.env.NODE_ENV !== 'development';
 
   @IsString()
   readonly REDIS_HOST = process.env.REDIS_HOST;
