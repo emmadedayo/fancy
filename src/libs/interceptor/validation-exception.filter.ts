@@ -1,29 +1,58 @@
-import { ExceptionFilter, Catch, ArgumentsHost, BadRequestException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
-import { ValidationError } from 'class-validator';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+import { ValidationException } from '../pipe/error';
 
-@Catch(BadRequestException)
-export class ValidationExceptionFilter implements ExceptionFilter {
-  catch(exception: BadRequestException, host: ArgumentsHost) {
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+
+  catch(exception: any, host: ArgumentsHost): void {
+    // In certain situations `httpAdapter` might not be available in the
+    // constructor method, thus we should resolve it here.
+    const { httpAdapter } = this.httpAdapterHost;
+
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const responseBody: any = exception.getResponse();
-    const errors: ValidationError[] = responseBody.message;
+    const httpStatus =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // Extract the first validation error message
-    let firstErrorMessage = 'Validation failed';
-    if (errors && errors.length > 0) {
-      const constraints = errors[0].constraints;
-      if (constraints) {
-        firstErrorMessage = Object.values(constraints)[0];
+    switch (true) {
+      case exception instanceof ValidationException: {
+        const exceptionResponse = exception.getResponse();
+        let errorMessage = '';
+        // Assuming exceptionResponse is an array of validation error objects
+        if (Array.isArray(exceptionResponse) && exceptionResponse.length > 0) {
+          errorMessage = exceptionResponse[0].message;
+        } else if (typeof exceptionResponse === 'string') {
+          errorMessage = exceptionResponse;
+        } else {
+          errorMessage = 'Validation error occurred'; // Default message if structure is unexpected
+        }
+        const responseBody = {
+          success: false,
+          message: errorMessage,
+          statusCode: HttpStatus.BAD_REQUEST,
+        };
+        return httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+      }
+
+      default: {
+        const responseBody = {
+          success: false,
+          message:
+            httpStatus == 500 ? 'Something went wrong' : exception.message,
+          statusCode: HttpStatus.BAD_REQUEST,
+        };
+        httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
       }
     }
-
-    response.status(status).json({
-      statusCode: status,
-      message: firstErrorMessage,
-    });
   }
 }
