@@ -7,7 +7,7 @@ import { BullModule } from '@nestjs/bull';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
 import { SendEmailConsumer } from './consumer/send-email.consumer';
-import { FirebaseService } from '../../libs/notification/firebase/firebase.service';
+import { UpdateUserConsumer } from './consumer/update-user.consumer';
 
 @Module({
   imports: [
@@ -25,6 +25,7 @@ import { FirebaseService } from '../../libs/notification/firebase/firebase.servi
     UserRepository,
     UserWalletRepository,
     SendEmailConsumer,
+    UpdateUserConsumer,
   ],
 })
 export class AuthenticationModule {}

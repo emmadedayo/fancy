@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   ChangePasswordDto,
   CreateLoginDto,
@@ -11,7 +11,6 @@ import {
   generateCode,
   generateUniqueIdFromName,
 } from '../../libs/common/helpers/utils';
-import { Cache } from 'cache-manager';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { Config } from '../../config';
@@ -20,17 +19,19 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
 import { UserRepository } from '../user/repositories/user.repository';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userWalletRepository: UserWalletRepository,
-    @Inject(CACHE_MANAGER)
-    private readonly cacheManager: Cache,
+    @InjectRedis() private readonly cacheManager: Redis,
     @InjectQueue(Config.CREATE_USER_QUEUE)
     private readonly registrationQueue: Queue,
+    @InjectQueue(Config.UPDATE_USER_CONSUMER)
+    private readonly updateUserConsumer: Queue,
     private jwtService: JwtService,
   ) {}
 
@@ -80,6 +81,9 @@ export class AuthenticationService {
     user.account_status = 'ACTIVE';
     await this.userRepository.findOneAndUpdate({ id: user.id }, user);
     await this.userWalletRepository.addUserWallet(user);
+    await this.updateUserConsumer.add({
+      user: user,
+    });
     return BaseResponse.success(
       user,
       'Email verified successfully',
@@ -103,6 +107,9 @@ export class AuthenticationService {
     user.is_phone_verified = true;
     user.account_status = 'ACTIVE';
     await this.userRepository.findOneAndUpdate({ id: user.id }, user);
+    await this.updateUserConsumer.add({
+      user: user,
+    });
     return BaseResponse.success(
       { user },
       'Phone verified successfully',
