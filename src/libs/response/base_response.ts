@@ -3,18 +3,18 @@ import { HttpStatus } from '@nestjs/common';
 export class BaseResponse<T> {
   message?: string;
   data?: T; // Make data optional
-  isSuccessful: boolean;
-  statusCode: HttpStatus;
+  success: boolean;
+  status_code: HttpStatus;
 
   private constructor(
-    isSuccessful: boolean,
-    statusCode?: HttpStatus,
+    success: boolean,
+    status_code?: HttpStatus,
     message?: string,
     data?: T,
   ) {
-    this.isSuccessful = isSuccessful;
-    this.statusCode =
-      statusCode || (isSuccessful ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    this.success = success;
+    this.status_code =
+      status_code || (success ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     this.message = message;
 
     // Conditionally add data to the response
@@ -26,16 +26,16 @@ export class BaseResponse<T> {
   static success<T>(
     data?: T,
     message?: string,
-    statusCode?: HttpStatus,
+    status_code?: HttpStatus,
   ): BaseResponse<T> {
-    return new BaseResponse(true, statusCode, message, data);
+    return new BaseResponse(true, status_code, message, data);
   }
 
   static error<T>(
     message: string,
     data?: T,
-    statusCode?: HttpStatus,
+    status_code?: HttpStatus,
   ): BaseResponse<T> {
-    return new BaseResponse(false, statusCode, message, data);
+    return new BaseResponse(false, status_code, message, data);
   }
 }
