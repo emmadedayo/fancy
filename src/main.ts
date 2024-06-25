@@ -6,6 +6,7 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { Config } from './config';
+import { ValidationExceptionFilter } from './libs/interceptor/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,7 @@ async function bootstrap() {
     defaultVersion: [VERSION_NEUTRAL, '1'],
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalFilters(new ValidationExceptionFilter());
   await app.listen(Config.PORT || 4500, '0.0.0.0');
   //print the url
   console.log(`Application is running on: ${await app.getUrl()}/`);
