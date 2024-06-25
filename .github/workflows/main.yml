@@ -62,8 +62,35 @@ jobs:
             docker stop $(echo $IMAGE_NAME)
             # Remove old container
             docker rm $(echo $IMAGE_NAME)
+            # Set environment variables
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
+            echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+            echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+            echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
+            echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+            echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
+            echo "PROD_DATABASE_USER=${{ secrets.PROD_DATABASE_USER }}" >> .env
+            echo "PROD_DATABASE_PASSWORD=${{ secrets.PROD_DATABASE_PASSWORD }}" >> .env
+            echo "PROD_DATABASE_HOST=${{ secrets.PROD_DATABASE_HOST }}" >> .env
+            echo "PROD_DATABASE_NAME=${{ secrets.PROD_DATABASE_NAME }}" >> .env
+            echo "PROD_DATABASE_PORT=${{ secrets.PROD_DATABASE_PORT }}" >> .env
+            echo "DATABASE_SYNC=${{ secrets.DATABASE_SYNC }}" >> .env
+            echo "DATABASE_LOGGING=${{ secrets.DATABASE_LOGGING }}" >> .env
+            echo "JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}" >> .env
+            echo "IS_PRODUCTION=${{ secrets.IS_PRODUCTION }}" >> .env
+            echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+            echo "REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}" >> .env
+            echo "CACHE_TTL=${{ secrets.CACHE_TTL }}" >> .env
+            echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> .env
+            echo "FIREBASE_CREDENTIALS=${{ secrets.FIREBASE_CREDENTIALS }}" >> .env
             # Run a new container from a new image
             docker run -d \
             --restart always \
             --name $(echo $IMAGE_NAME) \
+            --env-file .env \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)

@@ -16,7 +16,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Set environment variables from the .env file
-RUN set -a && source .env && set +a
+RUN cp .env.example .env
 
 # Build the NestJS application
 RUN npm run build
