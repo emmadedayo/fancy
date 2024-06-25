@@ -18,6 +18,9 @@ import { UpdateUserConsumer } from './consumer/update-user.consumer';
     BullModule.registerQueue({
       name: Config.CREATE_USER_QUEUE,
     }),
+    BullModule.registerQueue({
+      name: Config.UPDATE_USER_CONSUMER,
+    }),
   ],
   controllers: [AuthenticationController],
   providers: [

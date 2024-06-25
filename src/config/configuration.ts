@@ -11,7 +11,7 @@ class Configuration {
   readonly CREATE_USER_QUEUE = 'create-user';
 
   @IsString()
-  readonly UPDATE_USER_CONSUMER = 'create-user-consumer';
+  readonly UPDATE_USER_CONSUMER = 'update-user-consumer';
 
   @IsString()
   readonly REDIS_URL = process.env.REDIS_URL;
