@@ -49,11 +49,11 @@ export class AuthenticationService {
     }
     const code = generateCode();
     await this.cacheManager.set(data.email, code);
-    await this.registrationQueue.add({
-      code,
-      user: user,
-      type: Config.VERIFICATION_TYPE,
-    });
+    // await this.registrationQueue.add({
+    //   code,
+    //   user: user,
+    //   type: Config.VERIFICATION_TYPE,
+    // });
     //return response
     return BaseResponse.success(
       null,
