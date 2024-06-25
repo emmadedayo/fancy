@@ -44,6 +44,9 @@ import { FirebaseModule } from './libs/notification/firebase/firebase.module';
           port: configService.get<number>('REDIS_PORT'),
           username: configService.get<string>('REDIS_USERNAME'),
           password: configService.get<string>('REDIS_PASSWORD'),
+          tls: {
+            rejectUnauthorized: false,
+          },
         },
       }),
       inject: [ConfigService], // Inject ConfigService into the factory function

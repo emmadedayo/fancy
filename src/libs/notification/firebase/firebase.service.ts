@@ -23,7 +23,7 @@ export class FirebaseService implements OnModuleInit {
       );
       return;
     }
-    const configUrl = 'https://fanzty.nyc3.digitaloceanspaces.com/fanzy.json';
+    const configUrl = 'https://fanzty.nyc3.digitaloceanspaces.com/fanzty.json';
     const response = await fetch(configUrl);
     if (!response.ok) {
       throw new Error('Network response was not ok');
