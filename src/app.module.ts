@@ -17,6 +17,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { FundraisingModule } from './modules/fundraising/fundraising.module';
 import { FirebaseModule } from './libs/notification/firebase/firebase.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Module({
   imports: [
@@ -32,20 +33,33 @@ import { RedisModule } from '@nestjs-modules/ioredis';
       isGlobal: true,
       ttl: 500,
     }),
-    BullModule.registerQueueAsync({
+    BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        redis: {
-          host: configService.get<string>('REDIS_HOST'),
-          port: configService.get<number>('REDIS_PORT'),
-          username: configService.get<string>('REDIS_USERNAME'),
-          password: configService.get<string>('REDIS_PASSWORD'),
-          tls: {
-            rejectUnauthorized: false,
+      useFactory: async (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('REDIS_URL');
+
+        return {
+          createClient: (type) => {
+            switch (type) {
+              case 'client':
+                return new Redis(redisUrl);
+              case 'subscriber':
+                return new Redis(redisUrl, {
+                  enableReadyCheck: false,
+                  maxRetriesPerRequest: null,
+                });
+              case 'bclient':
+                return new Redis(redisUrl, {
+                  enableReadyCheck: false,
+                  maxRetriesPerRequest: null,
+                });
+              default:
+                throw new Error('Unexpected connection type: ' + type);
+            }
           },
-        },
-      }),
-      inject: [ConfigService], // Inject ConfigService into the factory function
+        };
+      },
+      inject: [ConfigService],
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
