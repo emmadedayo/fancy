@@ -8,8 +8,8 @@ export class DigitalOceanService {
   constructor() {
     this.s3 = new AWS.S3({
       endpoint: 'https://nyc3.digitaloceanspaces.com',
-      accessKeyId: 'DO009DTD8Z8BDHK7E46E',
-      secretAccessKey: 'qYccbRbGC4ie++dLTB2t1L1mMivBd1RGTkEJLPN3lJg',
+      accessKeyId: 'DO00H76LGD4FKU4TPL8C',
+      secretAccessKey: '8nd4EnBNUDLX4IlPgNY6YkxzFcd2Lacjbo10HUE6eJM',
       region: 'nyc3',
     });
   }
@@ -23,7 +23,7 @@ export class DigitalOceanService {
     }
 
     const params: AWS.S3.PutObjectRequest = {
-      Bucket: 'hubeatz',
+      Bucket: 'fanzty',
       Key: filename,
       Body: buffer,
       ACL: 'public-read',
