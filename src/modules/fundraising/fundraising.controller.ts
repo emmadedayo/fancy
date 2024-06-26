@@ -75,7 +75,10 @@ export class FundraisingController {
   }
 
   @Get('get-fundraising-by-id/:id')
-  getFundRaiseById(@Param('id') id: string) {
-    return this.fundraisingService.getFundRaiseById(id);
+  getFundRaiseById(
+    @Param('id') id: string,
+    @Query() pagination: PaginationDto,
+  ) {
+    return this.fundraisingService.getFundRaiseById(id, pagination);
   }
 }

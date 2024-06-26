@@ -69,8 +69,8 @@ export class FundraisingService {
       return BaseResponse.error('Fundraiser not found', null);
     }
     data['slugUrl'] = data.title.toLowerCase().replace(/ /g, '-');
-    const updatedFund = await this.fundRaise.update({ id: fund_id }, data);
-    return BaseResponse.success(updatedFund, 'Fundraiser updated successfully');
+    await this.fundRaise.update({ id: fund_id }, data);
+    return BaseResponse.success(null, 'Fundraiser updated successfully');
   }
 
   async deleteFundRaiser(user_id: string, fund_id: string) {
@@ -115,7 +115,7 @@ export class FundraisingService {
     }
     fund.status = FundRaisingStatus.STOP;
     await this.fundRaise.save(fund);
-    return BaseResponse.success(fund, 'Fundraiser stopped successfully');
+    return BaseResponse.success(null, 'Fundraiser stopped successfully');
   }
 
   async makeDonation(user: UserEntity, data: MakeDonationDto) {
@@ -145,8 +145,11 @@ export class FundraisingService {
         cancel_action: 'https://your-cancel-url.com',
       },
     );
+
+    //get only authorization_url from payStackResponse
+    const authorizationUrl = payStackResponse.data.authorization_url;
     return BaseResponse.success(
-      payStackResponse,
+      authorizationUrl,
       'Payment initialized successfully',
     );
   }
@@ -163,17 +166,21 @@ export class FundraisingService {
     return BaseResponse.success(fundRaise, 'Fundraise fetched successfully');
   }
 
-  async getFundRaiseById(id: string) {
-    const fund = await this.fundRaise.findOne(
+  async getFundRaiseById(id: string, data: PaginationDto) {
+    const pageSize = parseInt(data.page, 10);
+    const limitInt = parseInt(data.limit, 10);
+    const fund = await this.fundRaiserSubscription.findPaginated(
+      limitInt,
+      pageSize,
       {
-        id,
+        fundRaisingId: id,
       },
-      { fundRaiserEntity: true },
+      { created_at: 'DESC' },
     );
     const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
       'amount',
       {
-        fundRaisingId: fund.id,
+        fundRaisingId: id,
       },
     );
     return BaseResponse.success(
