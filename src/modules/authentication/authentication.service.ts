@@ -76,16 +76,18 @@ export class AuthenticationService {
     if (!user) {
       return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
     }
-    user.email_verified_at = new Date();
-    user.is_email_verified = true;
-    user.account_status = 'ACTIVE';
-    await this.userRepository.findOneAndUpdate({ id: user.id }, user);
-    await this.userWalletRepository.addUserWallet(user);
-    await this.updateUserConsumer.add({
-      user: user,
-    });
+    if (data.type === 'REGISTER') {
+      user.email_verified_at = new Date();
+      user.is_email_verified = true;
+      user.account_status = 'ACTIVE';
+      await this.userRepository.findOneAndUpdate({ id: user.id }, user);
+      await this.userWalletRepository.addUserWallet(user);
+      await this.updateUserConsumer.add({
+        user: user,
+      });
+    }
     return BaseResponse.success(
-      user,
+      null,
       'Email verified successfully',
       HttpStatus.OK,
     );
