@@ -4,7 +4,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
 import { BaseEntity } from '../../../libs/db/BaseEntity';
@@ -49,7 +48,7 @@ export class FundRaisingEntity extends BaseEntity {
   })
   status: FundRaisingStatus;
 
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+  @Column({ name: 'deleted_at', nullable: true })
   deletedAt?: Date;
 
   //expired_at

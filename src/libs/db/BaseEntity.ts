@@ -3,12 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   UpdateDateColumn,
-  VersionColumn,
+
 } from 'typeorm';
 
 @Entity()
 export class BaseEntity {
-  @Exclude()
   @CreateDateColumn()
   created_at?: Date;
 
