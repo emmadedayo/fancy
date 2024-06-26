@@ -1,4 +1,4 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class BaseResponse<T> {
   message?: string;
@@ -36,6 +36,6 @@ export class BaseResponse<T> {
     data?: T,
     status_code?: HttpStatus,
   ): BaseResponse<T> {
-    return new BaseResponse(false, status_code, message, data);
+    throw new HttpException({ status_code, message }, status_code);
   }
 }
