@@ -1,4 +1,11 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 import Gender from '../../../libs/enum/gender.enum';
 
 export class UpdateUserDto {
@@ -21,6 +28,20 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   avatar?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  email?: string;
+
+  @IsOptional()
+  @IsPhoneNumber(null)
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  social?: string;
 }
 
 export class FollowerRequestDto {
