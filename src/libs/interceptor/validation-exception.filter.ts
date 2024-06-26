@@ -47,8 +47,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       default: {
         const responseBody = {
           success: false,
-          message:
-            httpStatus == 500 ? 'Something went wrong' : exception.message,
+          message: exception.message,
           statusCode: HttpStatus.BAD_REQUEST,
         };
         httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);

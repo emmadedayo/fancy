@@ -4,10 +4,6 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "assets": [
-      {
-        "include": "libs/notification/firebase/fanzy.json",
-        "outDir": "dist/libs/notification/firebase"
-      }
     ],
     "watchAssets": true
   }
