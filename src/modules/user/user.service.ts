@@ -9,6 +9,7 @@ import {
 import { UserFollowerRepository } from './repositories/user_follower_repository';
 import { PaginationDto } from '../../libs/pagination/pagination';
 import { PayStackService } from '../../libs/payment/paystack/paystack.service';
+import { PostRepository } from '../post/repos/post-repository';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly userFollowerRepository: UserFollowerRepository,
     private readonly payStackService: PayStackService,
+    private readonly postRepository: PostRepository,
   ) {}
 
   async getMe(userId: string) {
@@ -29,8 +31,10 @@ export class UserService {
     const countFollowing = await this.userFollowerRepository.countWhere({
       followerId: userId,
     });
+    const totalPost = await this.postRepository.countWhere({ userId: userId });
     user['followers'] = countFollowers;
     user['following'] = countFollowing;
+    user['total_post'] = totalPost;
     return BaseResponse.success(
       user,
       'User fetched successfully',
