@@ -39,7 +39,7 @@ export class FundRaisingEntity extends BaseEntity {
   image: string;
 
   @Column({ name: 'target_amount', type: 'decimal', precision: 14, scale: 2 })
-  targetAmount: number; // Use 'number' type for decimals in TypeORM
+  target_amount: number; // Use 'number' type for decimals in TypeORM
 
   @Column({
     type: 'enum',
@@ -49,15 +49,15 @@ export class FundRaisingEntity extends BaseEntity {
   status: FundRaisingStatus;
 
   @Column({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
+  deleted_at?: Date;
 
   //expired_at
   @Column({ name: 'expired_at', type: 'timestamp', nullable: true })
-  expiredAt: Date;
+  expired_at: Date;
 
   //slug_url
-  @Column({ name: 'slug_url', type: 'varchar', length: 255, nullable: true })
-  slugUrl: string;
+  @Column({ name: 'slug_url', type: 'varchar', nullable: true })
+  slug_url: string;
 
   //join fund raiser
 

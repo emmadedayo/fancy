@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsUUID,
+  IsDateString,
 } from 'class-validator';
 import { FundRaisingStatus } from '../entity/fundraise.entity';
 
@@ -24,7 +25,11 @@ export class CreateFundRaisingDto {
 
   @IsNotEmpty()
   @IsNumber()
-  targetAmount: number;
+  target_amount: number;
+
+  @IsDateString()
+  @IsNotEmpty()
+  expired_at: Date;
 }
 
 // DTO for updating an existing fundraising
