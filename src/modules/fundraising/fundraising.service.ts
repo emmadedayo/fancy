@@ -191,15 +191,6 @@ export class FundraisingService {
       },
       { created_at: 'DESC' },
     );
-    const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
-      'amount',
-      {
-        fundRaisingId: id,
-      },
-    );
-    return BaseResponse.success(
-      { fund, totalRaised },
-      'Fundraise fetched successfully',
-    );
+    return BaseResponse.success(fund, 'Fundraise fetched successfully');
   }
 }
