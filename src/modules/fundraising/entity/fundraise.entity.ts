@@ -23,7 +23,7 @@ export class FundRaisingEntity extends BaseEntity {
   id: string;
 
   @Column({ name: 'user_id', type: 'uuid', nullable: false })
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

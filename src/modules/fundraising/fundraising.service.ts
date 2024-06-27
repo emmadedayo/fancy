@@ -23,8 +23,8 @@ export class FundraisingService {
   ) {}
 
   async createFundRaiser(user_id: string, data: CreateFundRaisingDto) {
-    data['userId'] = user_id;
-    data['slugUrl'] = data.title.toLowerCase().replace(/ /g, '-');
+    data['user_id'] = user_id;
+    data['slug_url'] = data.title.toLowerCase().replace(/ /g, '-');
     const fund = await this.fundRaise.save(<FundRaisingEntity>data);
     return BaseResponse.success(fund, 'Fundraiser created successfully');
   }
@@ -36,7 +36,7 @@ export class FundraisingService {
     const totalFundRaise = await this.fundRaise.sumWithConditions(
       'target_amount',
       {
-        userId: user_id,
+        user_id: user_id,
         status:
           FundRaisingStatus.IN_PROGRESS ||
           FundRaisingStatus.PENDING ||
@@ -47,7 +47,7 @@ export class FundraisingService {
       limitInt,
       pageSize,
       {
-        userId: user_id,
+        user_id: user_id,
       },
       { created_at: 'DESC' },
     );
@@ -77,7 +77,7 @@ export class FundraisingService {
   ) {
     const fund = await this.fundRaise.findOne({
       id: fund_id,
-      userId: user_id,
+      user_id: user_id,
     });
     if (!fund) {
       return BaseResponse.error('Fundraiser not found', null);
@@ -90,7 +90,7 @@ export class FundraisingService {
   async deleteFundRaiser(user_id: string, fund_id: string) {
     const fund = await this.fundRaise.findOne({
       id: fund_id,
-      userId: user_id,
+      user_id: user_id,
     });
     if (!fund) {
       return BaseResponse.error('Fundraiser not found', null);
@@ -102,7 +102,7 @@ export class FundraisingService {
   async getFundRaiserById(id: string, user_id: string) {
     const fund = await this.fundRaise.findOne({
       id,
-      userId: user_id,
+      user_id: user_id,
     });
     const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
       'amount',
@@ -119,7 +119,7 @@ export class FundraisingService {
   async stopFundraising(id: string, user_id: string) {
     const fund = await this.fundRaise.findOne({
       id,
-      userId: user_id,
+      user_id: user_id,
     });
     if (!fund) {
       return BaseResponse.error('Fundraiser not found', null);
@@ -152,7 +152,7 @@ export class FundraisingService {
       data.amount * 100,
       'https://your-callback-url.com',
       {
-        fundRaisingId: fund.id,
+        fund_raising_id: fund.id,
         fundRaiserId: fundRaiser.id,
         userId: user.id,
         paymentType: PaymentType.DONATION,
@@ -187,7 +187,7 @@ export class FundraisingService {
       limitInt,
       pageSize,
       {
-        fundRaisingId: id,
+        fund_raising_id: id,
       },
       { created_at: 'DESC' },
     );
