@@ -163,7 +163,7 @@ export class FundraisingService {
     //get only authorization_url from payStackResponse
     const authorizationUrl = payStackResponse.data.authorization_url;
     return BaseResponse.success(
-      authorizationUrl,
+      { url: authorizationUrl },
       'Payment initialized successfully',
     );
   }

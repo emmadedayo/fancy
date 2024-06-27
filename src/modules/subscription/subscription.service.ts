@@ -115,8 +115,9 @@ export class SubscriptionService {
         cancel_action: 'https://your-cancel-url.com',
       },
     );
+    const authorizationUrl = payStackResponse.data.authorization_url;
     return BaseResponse.success(
-      payStackResponse,
+      { url: authorizationUrl },
       'User subscribed successfully',
       HttpStatus.CREATED,
     );
