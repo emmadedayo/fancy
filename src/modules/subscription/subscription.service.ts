@@ -97,12 +97,24 @@ export class SubscriptionService {
         HttpStatus.NOT_FOUND,
       );
     }
+    //check of active subscription
+    const activeSubscription = await this.subscribeUserRepository.findOne({
+      user_id: user.id,
+      status: SubscriptionStatus.ACTIVE,
+    });
+    if (activeSubscription) {
+      return BaseResponse.error(
+        'User already has an active subscription',
+        null,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const date = calculateSubscriptionEndDate(new Date(), 1);
     const dataInsert = {
-      userId: user.id,
-      subscriptionDetails: subscription,
+      user_id: user.id,
+      subscription_details: subscription,
       status: SubscriptionStatus.PENDING,
-      expiredAt: date,
+      expired_at: date,
     };
     await this.subscribeUserRepository.save(<SubscribeUserEntity>dataInsert);
     const payStackResponse = await this.payStackService.initializeTransaction(

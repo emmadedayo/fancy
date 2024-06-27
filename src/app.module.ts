@@ -18,10 +18,12 @@ import { FundraisingModule } from './modules/fundraising/fundraising.module';
 import { FirebaseModule } from './libs/notification/firebase/firebase.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     RedisModule.forRootAsync({
       useFactory: () => ({

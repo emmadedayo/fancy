@@ -7,7 +7,8 @@ import { UserFollowerRepository } from './repositories/user_follower_repository'
 import { PayStackService } from '../../libs/payment/paystack/paystack.service';
 import { UserAdminService } from './user-admin.service';
 import { PostModule } from '../post/post.module';
-import { PostRepository } from "../post/repos/post-repository";
+import { PostRepository } from '../post/repos/post-repository';
+import { SubscribeUserRepository } from '../subscription/repo/subscribe-user-repo';
 
 @Module({
   imports: [PostModule],
@@ -20,6 +21,7 @@ import { PostRepository } from "../post/repos/post-repository";
     UserFollowerRepository,
     PayStackService,
     PostRepository,
+    SubscribeUserRepository,
   ],
 })
 export class UserModule {}
