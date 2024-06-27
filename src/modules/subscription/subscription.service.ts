@@ -61,7 +61,7 @@ export class SubscriptionService {
     }
     await this.subscriptionRepository.findOneAndUpdate(
       { id },
-      { deletedAt: new Date() },
+      { deleted_at: new Date() },
     );
     return BaseResponse.success(
       null,
@@ -107,7 +107,7 @@ export class SubscriptionService {
     await this.subscribeUserRepository.save(<SubscribeUserEntity>dataInsert);
     const payStackResponse = await this.payStackService.initializeTransaction(
       user.email,
-      subscription.subscriptionPrice * 100,
+      subscription.subscription_price * 100,
       'https://your-callback-url.com',
       {
         userId: user.id,
@@ -182,4 +182,6 @@ export class SubscriptionService {
       HttpStatus.OK,
     );
   }
+
+  //TODO  chat limit
 }

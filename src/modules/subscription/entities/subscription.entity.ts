@@ -12,14 +12,14 @@ export class SubscriptionEntity extends BaseEntity {
   id: string;
 
   @Column({ name: 'subscription_name', type: 'varchar', nullable: false })
-  subscriptionName: string;
+  subscription_name: string;
 
   @Column({
     name: 'subscription_description',
     type: 'varchar',
     nullable: false,
   })
-  subscriptionDescription: string;
+  subscription_description: string;
 
   @Column({
     name: 'subscription_price',
@@ -28,11 +28,11 @@ export class SubscriptionEntity extends BaseEntity {
     scale: 2,
     nullable: false,
   })
-  subscriptionPrice: number;
+  subscription_price: number;
 
   @Column({ name: 'subscription_features', type: 'json', nullable: false })
-  subscriptionFeatures: any;
+  subscription_features: any;
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true, select: false })
-  deletedAt?: Date;
+  deleted_at?: Date;
 }

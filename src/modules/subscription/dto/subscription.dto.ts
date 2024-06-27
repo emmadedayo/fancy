@@ -15,19 +15,19 @@ interface SubscriptionFeatures {
 export class CreateSubscriptionDto {
   @IsNotEmpty()
   @IsString()
-  subscriptionName: string;
+  subscription_name: string;
 
   @IsNotEmpty()
   @IsString()
-  subscriptionDescription: string;
+  subscription_description: string;
 
   @IsNotEmpty()
   @IsNumber()
-  subscriptionPrice: number;
+  subscription_price: number;
 
   @IsNotEmpty()
   @IsObject()
-  subscriptionFeatures: SubscriptionFeatures;
+  subscription_features: SubscriptionFeatures;
 }
 
 export class UpdateSubscriptionDto {
