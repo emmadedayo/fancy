@@ -56,7 +56,7 @@ export class FundraisingService {
     const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
       'amount',
       {
-        fundRaisingId: In(ids),
+        fund_raising_id: In(ids),
       },
     );
     // Add totalRaised to each subscription
@@ -107,7 +107,7 @@ export class FundraisingService {
     const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
       'amount',
       {
-        fundRaisingId: fund.id,
+        fund_raising_id: fund.id,
       },
     );
     return BaseResponse.success(
@@ -134,14 +134,14 @@ export class FundraisingService {
 
   async makeDonation(user: UserEntity, data: MakeDonationDto) {
     const fund = await this.fundRaise.findOne({
-      id: data.fundRaisingId,
+      id: data.fund_raising_id,
     });
     if (!fund) {
       return BaseResponse.error('Fundraiser not found', null);
     }
     const dataInsert = {
-      userId: user.id,
-      fundRaisingId: fund.id,
+      user_id: user.id,
+      fund_raising_id: fund.id,
       amount: data.amount,
     };
     const fundRaiser = await this.fundRaiserSubscription.save(

@@ -63,7 +63,7 @@ export class FundRaisingEntity extends BaseEntity {
 
   @OneToMany(
     () => FundRaiserEntity,
-    (fundRaiserEntity) => fundRaiserEntity.fundRaising,
+    (fundRaiserEntity) => fundRaiserEntity.fund_raising,
   ) // Corrected relationship
   fundRaiserEntity: FundRaiserEntity[];
 }

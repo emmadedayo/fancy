@@ -22,27 +22,27 @@ export class FundRaiserEntity extends BaseEntity {
   id?: string;
 
   @Column({ name: 'user_id', type: 'uuid', nullable: false })
-  userId: string;
+  user_id: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
   @Column({ name: 'fund_raising_id', type: 'uuid', nullable: false })
-  fundRaisingId: string;
+  fund_raising_id: string;
 
   @ManyToOne(
     () => FundRaisingEntity,
     (fundRaising) => fundRaising.fundRaiserEntity,
   )
   @JoinColumn({ name: 'fund_raising_id', referencedColumnName: 'id' })
-  fundRaising: FundRaisingEntity;
+  fund_raising: FundRaisingEntity;
 
   @Column({ type: 'decimal', precision: 14, scale: 2 })
   amount: number; // Use 'number' for decimals in TypeORM
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
+  deleted_at?: Date;
 
   @Column({
     type: 'enum',

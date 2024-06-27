@@ -70,5 +70,5 @@ export class MakeDonationDto {
 
   @IsNotEmpty()
   @IsString()
-  fundRaisingId: string;
+  fund_raising_id: string;
 }
