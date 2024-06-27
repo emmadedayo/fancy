@@ -21,7 +21,7 @@ export class CreateFundRaisingDto {
 
   @IsOptional() // Assuming images are optional during creation
   @IsString()
-  images?: string;
+  image?: string;
 
   @IsNotEmpty()
   @IsNumber()
