@@ -12,6 +12,7 @@ import { PayStackService } from '../../libs/payment/paystack/paystack.service';
 import { UserEntity } from '../user/entity/user.entity';
 import { PaymentType } from '../../libs/payment/payment-type.enum';
 import { FundRaiserEntity } from './entity/fund-raiser.entity';
+import { In } from 'typeorm';
 
 @Injectable()
 export class FundraisingService {
@@ -50,6 +51,19 @@ export class FundraisingService {
       },
       { created_at: 'DESC' },
     );
+    //get id from subscriptions and get total amount from fundRaiserSubscription
+    const ids = subscriptions.data.map((sub) => sub.id);
+    const totalRaised = await this.fundRaiserSubscription.sumWithConditions(
+      'amount',
+      {
+        fundRaisingId: In(ids),
+      },
+    );
+    // Add totalRaised to each subscription
+    subscriptions.data = subscriptions.data.map((sub) => {
+      sub['total_raised'] = totalRaised || 0;
+      return sub;
+    });
     return BaseResponse.success(
       { subscriptions, totalFundRaise },
       'Fundraiser fetched successfully',
