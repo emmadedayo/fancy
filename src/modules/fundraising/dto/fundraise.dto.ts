@@ -69,6 +69,6 @@ export class MakeDonationDto {
   amount: number;
 
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   fundRaisingId: string;
 }
