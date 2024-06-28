@@ -35,7 +35,7 @@ export class StoryEntity extends BaseEntity {
   deletedAt?: Date;
 
   // Relationship with User entity
-  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 

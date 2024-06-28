@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './repositories/user.repository';
 import { BaseResponse } from '../../libs/response/base_response';
 import {
+  BankDetailsDto,
   BankValidatorDto,
   FollowerRequestDto,
   UpdateUserDto,
@@ -49,6 +50,49 @@ export class UserService {
     );
   }
 
+  async getUserById(userId: string) {
+    const user = await this.userRepository.findOne(
+      { id: userId },
+      { wallet: true },
+    );
+    const countFollowers = await this.userFollowerRepository.countWhere({
+      followingId: userId,
+    });
+    const countFollowing = await this.userFollowerRepository.countWhere({
+      followerId: userId,
+    });
+    const totalPost = await this.postRepository.countWhere({ userId: userId });
+    const subscription = await this.subscribeUserRepository.find([
+      { status: SubscriptionStatus.ACTIVE, user_id: userId },
+    ]);
+    user['followers'] = countFollowers;
+    user['following'] = countFollowing;
+    user['total_post'] = totalPost;
+    user['subscribed'] = subscription[0];
+    return BaseResponse.success(
+      user,
+      'User fetched successfully',
+      HttpStatus.OK,
+    );
+  }
+
+  async getUserPosts(userId: string, data: PaginationDto) {
+    const pageSize = parseInt(data.limit, 10) || 10;
+    const currentPage = parseInt(data.page, 10) || 1;
+    const posts = await this.postRepository.findPaginated(
+      pageSize,
+      currentPage,
+      { userId },
+      {},
+      { images: true },
+    );
+    return BaseResponse.success(
+      posts,
+      'Posts fetched successfully',
+      HttpStatus.OK,
+    );
+  }
+
   async updateUser(userId: string, data: UpdateUserDto) {
     const user = await this.userRepository.findOne(
       { id: userId },
@@ -76,6 +120,25 @@ export class UserService {
   }
 
   async requestCreator(userId: string) {
+    const check = await this.userRepository.findOne({ id: userId });
+    if (!check) {
+      return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
+    }
+    if (
+      check.avatar ===
+        'https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671142.jpg' ||
+      check.avatar === null
+    ) {
+      return BaseResponse.error('1001', null, HttpStatus.BAD_REQUEST);
+    }
+    //check if user_docs is not empty or null
+    if (check.user_docs === null) {
+      return BaseResponse.error('1002', null, HttpStatus.BAD_REQUEST);
+    }
+    //check if user bio is not empty or null
+    if (check.bio === null || check.bio === '') {
+      return BaseResponse.error('1001', null, HttpStatus.BAD_REQUEST);
+    }
     await this.userRepository.findOneAndUpdate(
       { id: userId },
       { creator: 'pending' },
@@ -195,6 +258,61 @@ export class UserService {
     return BaseResponse.success(
       data['data'],
       'Bank code validated successfully',
+      HttpStatus.OK,
+    );
+  }
+
+  async updateBankDetails(userId: string, data: BankDetailsDto) {
+    const user = await this.userRepository.findOne({ id: userId });
+    if (!user) {
+      return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
+    }
+    const bank: Record<string, any> = {
+      bank_name: data.bank_name,
+      account_number: data.account_number,
+      account_name: data.account_name,
+      bank_code: data.bank_code,
+    };
+    await this.userRepository.update({ id: userId }, { user_docs: bank });
+    return BaseResponse.success(
+      null,
+      'Bank details updated successfully',
+      HttpStatus.OK,
+    );
+  }
+
+  async makeAccountPrivate(userId: string) {
+    const user = await this.userRepository.findOne({ id: userId });
+
+    if (!user) {
+      return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
+    }
+    const newIsPrivateState = !user.is_private; // Toggle is_private
+    await this.userRepository.update(
+      { id: userId },
+      { is_private: newIsPrivateState },
+    );
+    return BaseResponse.success(
+      null,
+      `Account ${newIsPrivateState ? 'made private' : 'made public'} successfully`,
+      HttpStatus.OK,
+    );
+  }
+
+  async isAccountAvailableForCall(userId: string) {
+    const user = await this.userRepository.findOne({ id: userId });
+
+    if (!user) {
+      return BaseResponse.error('User not found', null, HttpStatus.NOT_FOUND);
+    }
+    const newIsAvailableForCallState = !user.is_available_for_call; // Toggle is_available_for_call
+    await this.userRepository.update(
+      { id: userId },
+      { is_available_for_call: newIsAvailableForCallState },
+    );
+    return BaseResponse.success(
+      null,
+      `Account ${newIsAvailableForCallState ? 'made available for call' : 'made unavailable for call'} successfully`,
       HttpStatus.OK,
     );
   }

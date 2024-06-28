@@ -49,7 +49,7 @@ export class FollowerRequestDto {
   user_id: string;
 }
 
-export class CreatorRequestDto {
+export class BankDetailsDto {
   @IsString()
   @IsNotEmpty()
   bank_name: string;

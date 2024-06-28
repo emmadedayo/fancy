@@ -67,6 +67,9 @@ export class UserEntity extends BaseEntity {
   @Column({ default: true })
   is_available_for_call: boolean;
 
+  @Column({ default: true })
+  is_private: boolean;
+
   @Column({ type: 'timestamp', nullable: true })
   email_verified_at: Date | null;
 

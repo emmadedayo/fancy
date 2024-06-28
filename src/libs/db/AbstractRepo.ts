@@ -76,7 +76,6 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     return repository.findOne(options);
   }
 
-
   async findOneAndUpdate(
     where: FindOptionsWhere<T>,
     partialEntity: QueryDeepPartialEntity<T>,

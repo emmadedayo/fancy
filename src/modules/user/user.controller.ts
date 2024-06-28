@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 import { CurrentUser } from './decorator/user.decorator';
 import { PaginationDto } from '../../libs/pagination/pagination';
 import {
+  BankDetailsDto,
   BankValidatorDto,
   FollowerRequestDto,
   UpdateUserDto,
@@ -108,5 +109,30 @@ export class UserController {
   @Put('reject-creator/:id')
   rejectCreator(@Param('id') id: string) {
     return this.userAdminService.disableCreator(id);
+  }
+
+  @Put('update-bank/:id')
+  updateBankDetails(@Param('id') id: string, @Body() data: BankDetailsDto) {
+    return this.userService.updateBankDetails(id, data);
+  }
+
+  @Put('make-account-private/:id')
+  makeAccountPrivate(@Param('id') id: string) {
+    return this.userService.makeAccountPrivate(id);
+  }
+
+  @Put('is_available_for_call/:id')
+  makeAvailableForCall(@Param('id') id: string) {
+    return this.userService.isAccountAvailableForCall(id);
+  }
+
+  @Get('get-user-by-id/:id')
+  getUserById(@Param('id') id: string) {
+    return this.userService.getUserById(id);
+  }
+
+  @Get('get-user-posts/:id')
+  getUserPosts(@Param('id') id: string, @Query() data: PaginationDto) {
+    return this.userService.getUserPosts(id, data);
   }
 }

@@ -7,6 +7,7 @@ import { StoryViewRepository } from './repo/story-view.repo';
 import { StoryEntity } from './entity/story.entity';
 import { StoryCommentEntity } from './entity/story-comment.entity';
 import { StoryViewEntity } from './entity/story-view.entity';
+import { PaginationDto } from '../../libs/pagination/pagination';
 
 @Injectable()
 export class StoryService {
@@ -83,6 +84,23 @@ export class StoryService {
     }
     return BaseResponse.success(
       null,
+      'Story view added successfully',
+      HttpStatus.CREATED,
+    );
+  }
+
+  async getStories(user_id: string, data: PaginationDto) {
+    const pageSize = parseInt(data.limit, 10) || 10;
+    const currentPage = parseInt(data.page, 10) || 1;
+    const stories = await this.storyRepository.findPaginated(
+      pageSize,
+      currentPage,
+      { user_id },
+      {}, // Optional: Provide ordering criteria if needed
+      {},
+    );
+    return BaseResponse.success(
+      stories,
       'Story view added successfully',
       HttpStatus.CREATED,
     );

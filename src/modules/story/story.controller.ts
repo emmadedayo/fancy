@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { StoryService } from './story.service';
 import { CommentDto, StoryDto, StoryViewDto } from './dto/story.dto';
 import { CurrentUser } from '../user/decorator/user.decorator';
+import { PaginationDto } from '../../libs/pagination/pagination';
 
 @Controller('story')
 export class StoryController {
@@ -32,5 +42,10 @@ export class StoryController {
     @CurrentUser() user,
   ) {
     return this.storyService.createStoryView(storyViewDto, user.id);
+  }
+
+  @Get('get-stories')
+  async getStories(@CurrentUser() user, @Query() paginationDto: PaginationDto) {
+    return this.storyService.getStories(user.id, paginationDto);
   }
 }

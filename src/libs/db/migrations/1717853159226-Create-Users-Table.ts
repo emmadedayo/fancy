@@ -100,7 +100,7 @@ export class CreateUsersTable1717853159226 implements MigrationInterface {
             {
               name: 'is_available_for_call',
               type: 'boolean',
-              default: true,
+              default: false,
             },
             {
               name: 'email_verified_at',
