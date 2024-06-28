@@ -135,10 +135,10 @@ export class SubscriptionService {
     );
   }
 
-  async getUserSubscription(userId: string, data: PaginationDto) {
+  async getUserSubscription(user_id: string, data: PaginationDto) {
     const pageSize = parseInt(data.page, 10);
     const limitInt = parseInt(data.limit, 10);
-    const whereClause: any = { userId };
+    const whereClause: any = { user_id };
     if (data.start_date) {
       const startDate = new Date(data.start_date); // Parse the date string
       if (!isNaN(startDate.getTime())) {
