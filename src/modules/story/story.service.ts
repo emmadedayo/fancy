@@ -95,7 +95,7 @@ export class StoryService {
     const stories = await this.storyRepository.findPaginated(
       pageSize,
       currentPage,
-      { user_id },
+      {},
       {}, // Optional: Provide ordering criteria if needed
       {},
     );
