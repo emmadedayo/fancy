@@ -1,11 +1,10 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Config } from '../../../config';
 import { PostRepository } from '../repos/post-repository';
 import { FirebaseService } from '../../../libs/notification/firebase/firebase.service';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { UserFollowerRepository } from '../../user/repositories/user_follower_repository';
-import { In } from 'typeorm';
 import { PostLikeRepository } from '../repos/post-like-repository';
 
 @Processor(Config.SEND_LIKE_NOTIFICATION)
@@ -39,7 +38,7 @@ export class PostLikeConsumerNotification {
     // notify all users that has liked the post that someone liked the post as well
     const getPostLikes = await this.postLikeRepository.find(
       {
-        postId: data.res.post_id,
+        post_id: data.res.post_id,
       },
       { user: true },
     );

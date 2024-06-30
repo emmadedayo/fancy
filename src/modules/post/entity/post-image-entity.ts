@@ -15,7 +15,7 @@ export class PostImageEntity extends BaseEntity {
   id?: string;
 
   @Column({ name: 'post_id', nullable: false })
-  postId: string;
+  post_id: string;
 
   @ManyToOne(() => PostEntity, (post) => post.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'post_id' })
@@ -25,5 +25,5 @@ export class PostImageEntity extends BaseEntity {
   image: string; // This is typically a file path or URL
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
+  deleted_at?: Date;
 }

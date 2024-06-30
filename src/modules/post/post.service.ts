@@ -43,13 +43,13 @@ export class PostService {
     postDto['userId'] = user.id;
     const post = await this.postRepository.save({
       ...postFields,
-      userId: user.id,
+      user_id: user.id,
     });
 
     if (images && images.length > 0) {
       const imageEntities = images.map((image) => {
         const postImage = new PostImageEntity();
-        postImage.postId = post.id;
+        postImage.post_id = post.id;
         postImage.image = image;
         return postImage;
       });
@@ -60,8 +60,8 @@ export class PostService {
     if (hashtags && hashtags.length > 0) {
       const tagEntities = hashtags.map((tag) => {
         const postTag = new PostUserTagEntity();
-        postTag.postId = post.id;
-        postTag.userId = tag;
+        postTag.post_id = post.id;
+        postTag.user_id = tag;
         return postTag;
       });
       await this.postTagRepository.saveMany(tagEntities);
@@ -70,21 +70,21 @@ export class PostService {
     return BaseResponse.success(null, 'Post created successfully');
   }
 
-  async updatePost(userId: string, postId: string, postDto: PostDto) {
+  async updatePost(user_id: string, post_id: string, postDto: PostDto) {
     // Update a post
-    const post = await this.postRepository.findOne({ id: postId, userId });
+    const post = await this.postRepository.findOne({ id: post_id, user_id });
     if (!post) {
       return BaseResponse.error('Post not found', 404);
     }
 
     const { images, hashtags, ...postFields } = postDto;
-    await this.postRepository.update({ id: postId }, postFields);
+    await this.postRepository.update({ id: post_id }, postFields);
 
     if (images && images.length > 0) {
-      await this.postImageRepository.findOneAndDelete({ postId });
+      await this.postImageRepository.findOneAndDelete({ post_id });
       const imageEntities = images.map((image) => {
         const postImage = new PostImageEntity();
-        postImage.postId = post.id;
+        postImage.post_id = post.id;
         postImage.image = image;
         return postImage;
       });
@@ -93,11 +93,11 @@ export class PostService {
 
     // Save hashtags
     if (hashtags && hashtags.length > 0) {
-      await this.postTagRepository.findOneAndDelete({ postId });
+      await this.postTagRepository.findOneAndDelete({ post_id });
       const tagEntities = hashtags.map((tag) => {
         const postTag = new PostUserTagEntity();
-        postTag.postId = post.id;
-        postTag.userId = tag;
+        postTag.post_id = post.id;
+        postTag.user_id = tag;
         return postTag;
       });
       await this.postTagRepository.saveMany(tagEntities);
@@ -119,30 +119,33 @@ export class PostService {
 
   async deletePost(postId: string) {
     // Delete a post
-    await this.postRepository.update({ id: postId }, { deletedAt: new Date() });
+    await this.postRepository.update(
+      { id: postId },
+      { deleted_at: new Date() },
+    );
     return BaseResponse.success(null, 'Post deleted successfully');
   }
 
-  async likePost(userId: string, postId: string) {
+  async likePost(user_id: string, post_id: string) {
     // Like a post
-    const postLike = await this.postLikeRepository.findOne({ id: postId });
+    const postLike = await this.postLikeRepository.findOne({ id: post_id });
     if (postLike) {
       //delete like
-      await this.postLikeRepository.findOneAndDelete({ id: postId });
+      await this.postLikeRepository.findOneAndDelete({ id: post_id });
     }
-    const res = await this.postLikeRepository.save({ postId, userId });
-    await this.postNotificationLikeQueue.add({ res, userId });
+    const res = await this.postLikeRepository.save({ post_id, user_id });
+    await this.postNotificationLikeQueue.add({ res, user_id });
     return BaseResponse.success(null, 'Post liked successfully');
   }
 
-  async commentPost(userId: string, postId: string, data: CommentDto) {
+  async commentPost(user_id: string, post_id: string, data: CommentDto) {
     // Comment on a post
     const comment = await this.postCommentRepository.save({
-      userId,
-      postId,
+      user_id,
+      post_id,
       comment: data.comment,
     });
-    await this.postNotificationCommentQueue.add({ comment, userId });
+    await this.postNotificationCommentQueue.add({ comment, user_id });
     return BaseResponse.success(null, 'Post commented successfully');
   }
 
@@ -153,22 +156,22 @@ export class PostService {
   }
 
   async viewPostOrShare(
-    userId: string,
-    postId: string,
+    user_id: string,
+    post_id: string,
     postViewDto: PostViewDto,
   ) {
     //check if user has viewed post or shared post
     const postView = await this.postViewRepository.findOne({
-      userId,
-      postId,
+      user_id,
+      post_id,
     });
     if (postView) {
       return BaseResponse.error('Post already viewed', 400);
     }
     // View a post
     await this.postViewRepository.save({
-      userId,
-      postId,
+      user_id,
+      post_id,
       type: postViewDto.type,
     });
     return BaseResponse.success(null, 'Post viewed successfully');
@@ -177,15 +180,15 @@ export class PostService {
   async bookmarkPost(userId: string, postId: string) {
     // Bookmark a post
     const postBookmark = await this.postBooMarkRepository.findOne({
-      postId: postId,
-      userId: userId,
+      post_id: postId,
+      user_id: userId,
     });
     if (postBookmark) {
       //delete bookmark
-      await this.postBooMarkRepository.findOneAndDelete({ postId: postId });
+      await this.postBooMarkRepository.findOneAndDelete({ post_id: postId });
     }
 
-    await this.postBooMarkRepository.save({ postId: postId, userId: userId });
+    await this.postBooMarkRepository.save({ post_id: postId, user_id: userId });
     return BaseResponse.success(null, 'Post bookmarked successfully');
   }
 
@@ -225,7 +228,7 @@ export class PostService {
     const MIN_FRIEND_POSTS = 3; // Adjust this threshold as needed
     const friendPostCount = await this.postRepository.countWhereIn(
       {},
-      'userId',
+      'user_id',
       friendIds,
     );
 
@@ -241,7 +244,7 @@ export class PostService {
     } else {
       // Not enough friend posts, fetch all posts
       const friendPostIds = (
-        await this.postRepository.find([{ userId: In(friendIds) }])
+        await this.postRepository.find([{ user_id: In(friendIds) }])
       ).map((post) => post.id);
       const topPosts = await this.postRepository.findPost(
         pageSize,

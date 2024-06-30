@@ -16,14 +16,14 @@ export class PostCommentEntity extends BaseEntity {
   id?: string;
 
   @Column({ name: 'post_id', nullable: false })
-  postId: string;
+  post_id: string;
 
   @ManyToOne(() => PostEntity, (post) => post.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'post_id' })
   post?: PostEntity;
 
   @Column({ name: 'user_id', nullable: false })
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
@@ -33,5 +33,5 @@ export class PostCommentEntity extends BaseEntity {
   comment: string;
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
+  deleted_at?: Date;
 }

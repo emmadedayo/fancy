@@ -1,5 +1,5 @@
 import { Process, Processor } from '@nestjs/bull';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Config } from '../../../config';
 import { PostRepository } from '../repos/post-repository';
 import { FirebaseService } from '../../../libs/notification/firebase/firebase.service';
@@ -23,7 +23,7 @@ export class PostNotification {
     const post = await this.postRepository.findOneOrFail({ id: data.post.id });
     //get all user if friends from userRepository
     const followers = await this.userFollowerRepository.find({
-      followingId: post.userId,
+      followingId: post.user_id,
     });
     const followerIds = followers.map((follower) => follower.followerId);
     //get all user from userRepository

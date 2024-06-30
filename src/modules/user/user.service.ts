@@ -35,7 +35,7 @@ export class UserService {
     const countFollowing = await this.userFollowerRepository.countWhere({
       followerId: userId,
     });
-    const totalPost = await this.postRepository.countWhere({ userId: userId });
+    const totalPost = await this.postRepository.countWhere({ user_id: userId });
     const subscription = await this.subscribeUserRepository.find([
       { status: SubscriptionStatus.ACTIVE, user_id: userId },
     ]);
@@ -61,7 +61,7 @@ export class UserService {
     const countFollowing = await this.userFollowerRepository.countWhere({
       followerId: userId,
     });
-    const totalPost = await this.postRepository.countWhere({ userId: userId });
+    const totalPost = await this.postRepository.countWhere({ user_id: userId });
     const subscription = await this.subscribeUserRepository.find([
       { status: SubscriptionStatus.ACTIVE, user_id: userId },
     ]);

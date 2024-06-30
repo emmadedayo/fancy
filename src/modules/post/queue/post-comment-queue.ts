@@ -38,7 +38,7 @@ export class PostLikeConsumerNotification {
     // notify all users that has liked the post that someone liked the post as well
     const getPostLikes = await this.postCommentRepository.find(
       {
-        postId: data.res.post_id,
+        post_id: data.res.post_id,
       },
       { user: true },
     );

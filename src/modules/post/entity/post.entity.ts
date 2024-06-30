@@ -20,7 +20,7 @@ export class PostEntity extends BaseEntity {
   id?: string;
 
   @Column({ name: 'user_id', nullable: false })
-  userId?: string;
+  user_id?: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' }) // Define the relationship to UserEntity
   @JoinColumn({ name: 'user_id' })
@@ -36,7 +36,7 @@ export class PostEntity extends BaseEntity {
   isFree: boolean;
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt?: Date;
+  deleted_at?: Date;
 
   @OneToMany(() => PostImageEntity, (postImage) => postImage.post, {
     eager: true,
