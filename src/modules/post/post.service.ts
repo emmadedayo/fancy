@@ -239,8 +239,12 @@ export class PostService {
         currentPage,
         { userId: In(friendIds) },
         {},
-        { images: true }, // Eager load
+        { images: true, user: true }, // Eager load
       );
+      //find password from user and remove it
+      posts.data.forEach((post) => {
+        delete post.user.password;
+      });
     } else {
       // Not enough friend posts, fetch all posts
       const friendPostIds = (
@@ -251,9 +255,13 @@ export class PostService {
         currentPage,
         [{ id: Not(In(friendPostIds)) }],
         {},
-        {},
+        { },
         true,
       );
+      //find password from user and remove it
+      topPosts.data.forEach((post) => {
+        delete post.user.password;
+      });
       posts = topPosts;
       //console.log('lenght' + posts);
     }

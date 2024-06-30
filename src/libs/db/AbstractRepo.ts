@@ -361,10 +361,14 @@ export abstract class AbstractRepo<T extends BaseEntity> {
       queryBuilder
         .leftJoin('post_likes', 'pl', `${tableName}.id = pl.post_id`)
         .leftJoinAndSelect(`${tableName}.images`, 'images')
+        .leftJoinAndSelect(`${tableName}.user`, 'user')
         .groupBy(`${tableName}.id`)
         .addGroupBy('pl.post_id')
         .addGroupBy('images.id') // Ensure images columns are included in the GROUP BY clause
+        .addGroupBy('user.id') // Ensure user columns are included in the GROUP BY clause
         .addGroupBy('images.created_at') // Include additional image columns if needed
+        .addGroupBy('user.updated_at') // Include additional image columns if needed
+        .addGroupBy('user.created_at') // Include additional image columns if needed
         .having('COUNT(pl.post_id) > :likesThreshold', { likesThreshold: -1 }); // Adjust threshold as needed
     }
 
@@ -382,7 +386,6 @@ export abstract class AbstractRepo<T extends BaseEntity> {
         }
       });
     }
-
     queryBuilder
       .loadRelationCountAndMap(`${tableName}.likeCount`, `${tableName}.likes`)
       .loadRelationCountAndMap(
