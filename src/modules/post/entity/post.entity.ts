@@ -22,7 +22,7 @@ export class PostEntity extends BaseEntity {
   @Column({ name: 'user_id', nullable: false })
   user_id?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' }) // Define the relationship to UserEntity
+  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE', eager: true }) // Define the relationship to UserEntity
   @JoinColumn({ name: 'user_id' })
   user?: UserEntity;
 
