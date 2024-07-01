@@ -138,7 +138,7 @@ export class PostService {
     ]);
     if (postLike.length !== 0) {
       //delete like
-      await this.postLikeRepository.findOneAndDelete({ id: post_id });
+      await this.postLikeRepository.findOneAndDelete({ id: postLike[0].id });
     }
     const res = await this.postLikeRepository.save({
       post_id,
