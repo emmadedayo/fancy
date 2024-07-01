@@ -126,14 +126,24 @@ export class PostService {
     return BaseResponse.success(null, 'Post deleted successfully');
   }
 
-  async likePost(user_id: string, post_id: string) {
+  async likePost(user_id: UserEntity, post_id: string) {
     // Like a post
-    const postLike = await this.postLikeRepository.findOne({ id: post_id });
-    if (postLike) {
+    const postLike = await this.postLikeRepository.find([
+      {
+        user_id: user_id.id,
+      },
+      {
+        post_id: post_id,
+      },
+    ]);
+    if (postLike.length !== 0) {
       //delete like
       await this.postLikeRepository.findOneAndDelete({ id: post_id });
     }
-    const res = await this.postLikeRepository.save({ post_id, user_id });
+    const res = await this.postLikeRepository.save({
+      post_id,
+      user_id: user_id.id,
+    });
     await this.postNotificationLikeQueue.add({ res, user_id });
     return BaseResponse.success(null, 'Post liked successfully');
   }
