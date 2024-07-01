@@ -212,6 +212,17 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     });
   }
 
+  //findOne By multiple conditions
+  async findOneByMultipleConditions(
+    where: FindOptionsWhere<T>[],
+    relations?: FindOptionsRelations<T>,
+  ) {
+    return readConnection.getRepository(this.entityTarget).findOne({
+      where,
+      relations,
+    });
+  }
+
   //find one
   async findOneOrFail(
     where: FindOptionsWhere<T>,
@@ -220,33 +231,6 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     const entity = await readConnection
       .getRepository(this.entityTarget)
       .findOneOrFail({ where, relations });
-
-    return entity;
-  }
-
-  async findOneOrFail2(
-    where: FindOptionsWhere<T> | FindOptionsWhere<T>[],
-    relations?: FindOptionsRelations<T>,
-  ) {
-    let entity;
-    if (Array.isArray(where)) {
-      // If multiple where conditions are provided, iterate through them
-      for (const condition of where) {
-        entity = await readConnection
-          .getRepository(this.entityTarget)
-          .findOne({ where: condition, relations });
-        if (entity) break;
-      }
-    } else {
-      // Single where condition
-      entity = await readConnection
-        .getRepository(this.entityTarget)
-        .findOne({ where, relations });
-    }
-
-    if (!entity) {
-      throw new Error('Entity not found');
-    }
 
     return entity;
   }
@@ -360,7 +344,7 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     order?: Record<string, any>,
     relations?: FindOptionsRelations<T>,
     top: boolean = false,
-    minLikes: number = 10,
+    user_id?: string,
   ): Promise<{
     data: T[];
     pagination?: { total: number; pageSize: number; currentPage: number };
@@ -443,6 +427,40 @@ export abstract class AbstractRepo<T extends BaseEntity> {
       };
     }
 
+    // @ts-ignore
+    const ids = data.map((post) => post.id);
+    //check if user has liked the post
+    //select from post_likes where user_id = user_id and post_id in (ids)
+    const likedPosts = await readConnection
+      .getRepository('PostLikeEntity')
+      .find({
+        where: {
+          user_id,
+          post_id: In(ids),
+        },
+      });
+    //add liked field to the post as boolean
+    data.forEach((post) => {
+      // @ts-ignore
+      const likedPost = likedPosts.find((lp) => lp.post_id === post.id);
+      post['liked'] = !!likedPost;
+    });
+    //select from post_views where user_id = user_id and post_id in (ids)
+    const viewedPosts = await readConnection
+      .getRepository('PostViewEntity')
+      .find({
+        where: {
+          user_id,
+          post_id: In(ids),
+          type: 'share',
+        },
+      });
+    //add viewed field to the post as boolean
+    data.forEach((post) => {
+      // @ts-ignore
+      const viewedPost = viewedPosts.find((vp) => vp.post_id === post.id);
+      post['shared'] = !!viewedPost;
+    });
     return {
       data,
       pagination: {

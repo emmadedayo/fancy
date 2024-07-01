@@ -128,7 +128,7 @@ export class PostService {
 
   async likePost(user_id: UserEntity, post_id: string) {
     // Like a post
-    const postLike = await this.postLikeRepository.findOneOrFail2([
+    const postLike = await this.postLikeRepository.findOneByMultipleConditions([
       {
         user_id: user_id.id,
       },
@@ -137,6 +137,7 @@ export class PostService {
       },
     ]);
     if (postLike !== null) {
+      //delete like
       await this.postLikeRepository.findOneAndDelete({ id: postLike.id });
     } else {
       const res = await this.postLikeRepository.save({
@@ -145,6 +146,7 @@ export class PostService {
       });
       await this.postNotificationLikeQueue.add({ res, user_id });
     }
+    console.log(postLike);
     return BaseResponse.success(null, 'Post liked successfully');
   }
 
@@ -171,7 +173,7 @@ export class PostService {
     postViewDto: PostViewDto,
   ) {
     //check if user has viewed post or shared post
-    const postView = await this.postViewRepository.findOneOrFail2([
+    const postView = await this.postViewRepository.find([
       {
         user_id: user_id.id,
       },
@@ -182,16 +184,17 @@ export class PostService {
         type: postViewDto.type,
       },
     ]);
-    if (postView !== null) {
+    if (postView.length !== 0) {
       //delete view
-      await this.postViewRepository.findOneAndDelete({ id: postView.id });
-    } else {
-      await this.postViewRepository.save({
-        user_id: user_id.id,
-        post_id,
-        type: postViewDto.type,
-      });
+      await this.postViewRepository.findOneAndDelete({ id: postView[0].id });
+      return BaseResponse.success(null, 'Post unviewed successfully');
     }
+    // View a post
+    await this.postViewRepository.save({
+      user_id: user_id.id,
+      post_id,
+      type: postViewDto.type,
+    });
     return BaseResponse.success(null, 'Post viewed successfully');
   }
 
@@ -258,6 +261,8 @@ export class PostService {
         { userId: In(friendIds) },
         {},
         { images: true, user: true }, // Eager load
+        false,
+        userId,
       );
       //find password from user and remove it
       posts.data.forEach((post) => {
@@ -275,6 +280,7 @@ export class PostService {
         {},
         {},
         true,
+        userId,
       );
       //find password from user and remove it
       topPosts.data.forEach((post) => {
