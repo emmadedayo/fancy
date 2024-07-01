@@ -156,21 +156,29 @@ export class PostService {
   }
 
   async viewPostOrShare(
-    user_id: string,
+    user_id: UserEntity,
     post_id: string,
     postViewDto: PostViewDto,
   ) {
     //check if user has viewed post or shared post
-    const postView = await this.postViewRepository.findOne({
-      user_id,
-      post_id,
-    });
-    if (postView) {
+    const postView = await this.postViewRepository.find([
+      {
+        user_id: user_id.id,
+      },
+      {
+        post_id: post_id,
+      },
+      {
+        type: postViewDto.type,
+      },
+    ]);
+    console.log('user_id', postView);
+    if (postView.length !== 0) {
       return BaseResponse.error('Post already viewed', 400);
     }
     // View a post
     await this.postViewRepository.save({
-      user_id,
+      user_id: user_id.id,
       post_id,
       type: postViewDto.type,
     });
@@ -255,7 +263,7 @@ export class PostService {
         currentPage,
         [{ id: Not(In(friendPostIds)) }],
         {},
-        { },
+        {},
         true,
       );
       //find password from user and remove it
