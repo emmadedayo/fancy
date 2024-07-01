@@ -172,7 +172,6 @@ export class PostService {
         type: postViewDto.type,
       },
     ]);
-    console.log('user_id', postView);
     if (postView.length !== 0) {
       //delete view
       await this.postViewRepository.findOneAndDelete({ id: postView[0].id });
