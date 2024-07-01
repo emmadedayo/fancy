@@ -174,7 +174,9 @@ export class PostService {
     ]);
     console.log('user_id', postView);
     if (postView.length !== 0) {
-      return BaseResponse.error('Post already viewed', 400);
+      //delete view
+      await this.postViewRepository.findOneAndDelete({ id: postView[0].id });
+      return BaseResponse.success(null, 'Post unviewed successfully');
     }
     // View a post
     await this.postViewRepository.save({
