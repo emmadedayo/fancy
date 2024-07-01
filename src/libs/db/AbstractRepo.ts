@@ -224,6 +224,33 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     return entity;
   }
 
+  async findOneOrFail2(
+    where: FindOptionsWhere<T> | FindOptionsWhere<T>[],
+    relations?: FindOptionsRelations<T>,
+  ) {
+    let entity;
+    if (Array.isArray(where)) {
+      // If multiple where conditions are provided, iterate through them
+      for (const condition of where) {
+        entity = await readConnection
+          .getRepository(this.entityTarget)
+          .findOne({ where: condition, relations });
+        if (entity) break;
+      }
+    } else {
+      // Single where condition
+      entity = await readConnection
+        .getRepository(this.entityTarget)
+        .findOne({ where, relations });
+    }
+
+    if (!entity) {
+      throw new Error('Entity not found');
+    }
+
+    return entity;
+  }
+
   async findOneAndDelete(where: FindOptionsWhere<T>) {
     const res = await writeConnection.manager
       .getRepository(this.entityTarget)
@@ -397,6 +424,12 @@ export abstract class AbstractRepo<T extends BaseEntity> {
         `${tableName}.views`,
         'shares',
         (qb) => qb.where('shares.type = :type', { type: 'share' }),
+      )
+      .loadRelationCountAndMap(
+        `${tableName}.viewCount`,
+        `${tableName}.views`,
+        'views',
+        (qb) => qb.where('views.type = :type', { type: 'view' }),
       );
 
     const [data, total] = await queryBuilder

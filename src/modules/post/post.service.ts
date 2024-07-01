@@ -128,7 +128,7 @@ export class PostService {
 
   async likePost(user_id: UserEntity, post_id: string) {
     // Like a post
-    const postLike = await this.postLikeRepository.find([
+    const postLike = await this.postLikeRepository.findOneOrFail2([
       {
         user_id: user_id.id,
       },
@@ -136,15 +136,15 @@ export class PostService {
         post_id: post_id,
       },
     ]);
-    if (postLike.length !== 0) {
-      //delete like
-      await this.postLikeRepository.findOneAndDelete({ id: postLike[0].id });
+    if (postLike !== null) {
+      await this.postLikeRepository.findOneAndDelete({ id: postLike.id });
+    } else {
+      const res = await this.postLikeRepository.save({
+        post_id,
+        user_id: user_id.id,
+      });
+      await this.postNotificationLikeQueue.add({ res, user_id });
     }
-    const res = await this.postLikeRepository.save({
-      post_id,
-      user_id: user_id.id,
-    });
-    await this.postNotificationLikeQueue.add({ res, user_id });
     return BaseResponse.success(null, 'Post liked successfully');
   }
 
@@ -171,7 +171,7 @@ export class PostService {
     postViewDto: PostViewDto,
   ) {
     //check if user has viewed post or shared post
-    const postView = await this.postViewRepository.find([
+    const postView = await this.postViewRepository.findOneOrFail2([
       {
         user_id: user_id.id,
       },
@@ -182,17 +182,16 @@ export class PostService {
         type: postViewDto.type,
       },
     ]);
-    if (postView.length !== 0) {
+    if (postView !== null) {
       //delete view
-      await this.postViewRepository.findOneAndDelete({ id: postView[0].id });
-      return BaseResponse.success(null, 'Post unviewed successfully');
+      await this.postViewRepository.findOneAndDelete({ id: postView.id });
+    } else {
+      await this.postViewRepository.save({
+        user_id: user_id.id,
+        post_id,
+        type: postViewDto.type,
+      });
     }
-    // View a post
-    await this.postViewRepository.save({
-      user_id: user_id.id,
-      post_id,
-      type: postViewDto.type,
-    });
     return BaseResponse.success(null, 'Post viewed successfully');
   }
 
