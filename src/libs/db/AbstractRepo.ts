@@ -461,6 +461,21 @@ export abstract class AbstractRepo<T extends BaseEntity> {
       const viewedPost = viewedPosts.find((vp) => vp.post_id === post.id);
       post['shared'] = !!viewedPost;
     });
+    //check if user has paid for the post
+    const isPaidPosts = await readConnection
+      .getRepository('PostPaidViewEntity')
+      .find({
+        where: {
+          user_id,
+          post_id: In(ids),
+        },
+      });
+    //add paid field to the post as boolean
+    data.forEach((post) => {
+      // @ts-ignore
+      const isPaidPost = isPaidPosts.find((ip) => ip.post_id === post.id);
+      post['paid'] = !!isPaidPost;
+    });
     return {
       data,
       pagination: {

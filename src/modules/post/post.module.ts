@@ -9,12 +9,12 @@ import { PostUserTagRepository } from './repos/post-tags-repository';
 import { PostViewRepository } from './repos/post-view-repository';
 import { PostBooMarkRepository } from './repos/post-bookmark-repository';
 import { UserFollowerRepository } from '../user/repositories/user_follower_repository';
-import { FirebaseService } from '../../libs/notification/firebase/firebase.service';
 import { BullModule } from '@nestjs/bull';
 import { Config } from '../../config';
 import { PostNotification } from './queue/post-notifiication-queue';
 import { UserRepository } from '../user/repositories/user.repository';
 import { PostLikeConsumerNotification } from './queue/post-like-consumer';
+import { PostPaidRepository } from './repos/post-paid-repository';
 
 @Module({
   imports: [
@@ -34,6 +34,7 @@ import { PostLikeConsumerNotification } from './queue/post-like-consumer';
     PostCommentRepository,
     PostImageRepository,
     PostLikeRepository,
+    PostPaidRepository,
     PostRepository,
     PostUserTagRepository,
     PostViewRepository,

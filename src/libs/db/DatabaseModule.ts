@@ -30,6 +30,7 @@ import { PostLikeEntity } from '../../modules/post/entity/post-like-entity';
 import { PostUserTagEntity } from '../../modules/post/entity/post-tags-entity';
 import { PostViewEntity } from '../../modules/post/entity/post-view-entity';
 import { PostBookmarkEntity } from '../../modules/post/entity/post-bookmark-entity';
+import { PostPaidViewEntity } from "../../modules/post/entity/post-paid.entity";
 
 types.setTypeParser(20, 'text', parseInt);
 types.setTypeParser(20, BigInt);
@@ -85,6 +86,7 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
       PostUserTagEntity,
       PostViewEntity,
       PostBookmarkEntity,
+      PostPaidViewEntity,
     ],
     migrations: [path.join(__dirname, './migrations/*{.ts,.js}')],
     logging: Config.DATABASE_LOGGING,
