@@ -443,7 +443,7 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     data.forEach((post) => {
       // @ts-ignore
       const likedPost = likedPosts.find((lp) => lp.post_id === post.id);
-      post['liked'] = !!likedPost;
+      post['is_liked'] = !!likedPost;
     });
     //select from post_views where user_id = user_id and post_id in (ids)
     const viewedPosts = await readConnection
@@ -459,7 +459,7 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     data.forEach((post) => {
       // @ts-ignore
       const viewedPost = viewedPosts.find((vp) => vp.post_id === post.id);
-      post['shared'] = !!viewedPost;
+      post['is_shared'] = !!viewedPost;
     });
     //check if user has paid for the post
     const isPaidPosts = await readConnection
