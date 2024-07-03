@@ -20,7 +20,6 @@ import { UserEntity } from '../user/entity/user.entity';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
 import { PostPaidRepository } from './repos/post-paid-repository';
-import { HttpStatusCode } from 'axios';
 
 @Injectable()
 export class PostService {
@@ -207,10 +206,15 @@ export class PostService {
 
   async bookmarkPost(userId: string, postId: string) {
     // Bookmark a post
-    const postBookmark = await this.postBooMarkRepository.findOne({
-      post_id: postId,
-      user_id: userId,
-    });
+    const postBookmark =
+      await this.postBooMarkRepository.findOneByMultipleConditions([
+        {
+          user_id: userId,
+        },
+        {
+          post_id: postId,
+        },
+      ]);
     if (postBookmark) {
       //delete bookmark
       await this.postBooMarkRepository.findOneAndDelete({ post_id: postId });
