@@ -476,6 +476,22 @@ export abstract class AbstractRepo<T extends BaseEntity> {
       const isPaidPost = isPaidPosts.find((ip) => ip.post_id === post.id);
       post['paid'] = !!isPaidPost;
     });
+
+    //check if post is been bookmarked
+    const isBookmarkedPosts = await readConnection
+      .getRepository('PostBookmarkEntity')
+      .find({
+        where: {
+          user_id,
+          post_id: In(ids),
+        },
+      });
+    //add bookmarked field to the post as boolean
+    data.forEach((post) => {
+      // @ts-ignore
+      const isBookmarkedPost = isBookmarkedPosts.find((ip) => ip.post_id === post.id);
+      post['is_bookmarked'] = !!isBookmarkedPost;
+    });
     return {
       data,
       pagination: {

@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from '@nestjs/common';
 import { PostRepository } from './repos/post-repository';
 import { PostImageRepository } from './repos/post-image-repository';
 import { PostViewRepository } from './repos/post-view-repository';
@@ -17,10 +17,10 @@ import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { Config } from '../../config';
 import { UserEntity } from '../user/entity/user.entity';
-import { UserRepository } from "../user/repositories/user.repository";
-import { UserWalletRepository } from "../user/repositories/user_wallet.repository";
-import { PostPaidRepository } from "./repos/post-paid-repository";
-import { HttpStatusCode } from "axios";
+import { UserRepository } from '../user/repositories/user.repository';
+import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
+import { PostPaidRepository } from './repos/post-paid-repository';
+import { HttpStatusCode } from 'axios';
 
 @Injectable()
 export class PostService {
@@ -320,19 +320,22 @@ export class PostService {
     }
 
     //check if user has paid for post
-    const postPaidView = await this.postPaidViewRepository.findOneByMultipleConditions([
-      {
-        user_id: user.id,
-      },
-      {
-        post_id: postId,
-      },
-    ]);
-    if(postPaidView !== null){
+    const postPaidView =
+      await this.postPaidViewRepository.findOneByMultipleConditions([
+        {
+          user_id: user.id,
+        },
+        {
+          post_id: postId,
+        },
+      ]);
+    if (postPaidView !== null) {
       throw new HttpException('Post already paid for', 400);
     }
 
-    const user_details = await this.userWalletRepository.findOne({ user_id: user.id });
+    const user_details = await this.userWalletRepository.findOne({
+      user_id: user.id,
+    });
     // Check if user has enough balance
     if (user_details.balance < Number(post.tips_amount)) {
       throw new HttpException('Insufficient balance', 400);
