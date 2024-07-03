@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from "@nestjs/common";
 import { PostRepository } from './repos/post-repository';
 import { PostImageRepository } from './repos/post-image-repository';
 import { PostViewRepository } from './repos/post-view-repository';
@@ -17,6 +17,10 @@ import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { Config } from '../../config';
 import { UserEntity } from '../user/entity/user.entity';
+import { UserRepository } from "../user/repositories/user.repository";
+import { UserWalletRepository } from "../user/repositories/user_wallet.repository";
+import { PostPaidRepository } from "./repos/post-paid-repository";
+import { HttpStatusCode } from "axios";
 
 @Injectable()
 export class PostService {
@@ -29,6 +33,9 @@ export class PostService {
     private readonly postViewRepository: PostViewRepository,
     private readonly postBooMarkRepository: PostBooMarkRepository,
     private readonly userFollowerRepository: UserFollowerRepository,
+    private readonly userRepository: UserRepository,
+    private readonly userWalletRepository: UserWalletRepository,
+    private readonly postPaidViewRepository: PostPaidRepository,
     @InjectQueue(Config.SEND_POST_NOTIFICATION)
     private readonly postNotificationQueue: Queue,
     @InjectQueue(Config.SEND_LIKE_NOTIFICATION)
@@ -303,5 +310,46 @@ export class PostService {
       { user: true },
     );
     return BaseResponse.success(comments, 'Comments fetched successfully');
+  }
+
+  async payForPost(user: UserEntity, postId: string) {
+    // Pay for a post
+    const post = await this.postRepository.findOne({ id: postId });
+    if (!post) {
+      throw new HttpException('Post not found', 404);
+    }
+
+    //check if user has paid for post
+    const postPaidView = await this.postPaidViewRepository.findOneByMultipleConditions([
+      {
+        user_id: user.id,
+      },
+      {
+        post_id: postId,
+      },
+    ]);
+    if(postPaidView !== null){
+      throw new HttpException('Post already paid for', 400);
+    }
+
+    const user_details = await this.userWalletRepository.findOne({ user_id: user.id });
+    // Check if user has enough balance
+    if (user_details.balance < Number(post.tips_amount)) {
+      throw new HttpException('Insufficient balance', 400);
+    }
+
+    // Deduct the amount from user's balance
+    user_details.balance -= Number(post.tips_amount);
+    await this.userWalletRepository.save(user_details);
+
+    // Save the paid view
+    await this.postPaidViewRepository.save({
+      post_id: postId,
+      user_id: user.id,
+      amount: Number(post.tips_amount),
+      initial_amount: Number(post.tips_amount),
+    });
+
+    return BaseResponse.success(null, 'Payment successful');
   }
 }

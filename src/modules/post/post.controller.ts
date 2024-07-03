@@ -102,4 +102,12 @@ export class PostController {
   ) {
     return this.postService.getComment(postId, data);
   }
+
+  @Put('pay/:id')
+  payForPost(
+    @CurrentUser() userId: any,
+    @Param('id') postId: string,
+  ) {
+    return this.postService.payForPost(userId, postId);
+  }
 }

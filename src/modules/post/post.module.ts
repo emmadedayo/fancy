@@ -15,6 +15,7 @@ import { PostNotification } from './queue/post-notifiication-queue';
 import { UserRepository } from '../user/repositories/user.repository';
 import { PostLikeConsumerNotification } from './queue/post-like-consumer';
 import { PostPaidRepository } from './repos/post-paid-repository';
+import { UserWalletRepository } from "../user/repositories/user_wallet.repository";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { PostPaidRepository } from './repos/post-paid-repository';
     PostNotification,
     PostLikeConsumerNotification,
     UserRepository,
+    UserWalletRepository
   ],
 })
 export class PostModule {}
