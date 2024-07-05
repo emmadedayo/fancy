@@ -9,10 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
-import {
-  CreateSubscriptionDto,
-  SubscribeUserDto,
-} from './dto/subscription.dto';
+import { CreateSubscriptionDto } from './dto/subscription.dto';
 import { CurrentUser } from '../user/decorator/user.decorator';
 import { PaginationDto } from '../../libs/pagination/pagination';
 
@@ -61,16 +58,16 @@ export class SubscriptionController {
     );
   }
 
-  @Post('create-user-subscription')
-  createUserSubscription(
-    @Body() subscribeUserDto: SubscribeUserDto,
-    @CurrentUser() user,
-  ) {
-    return this.subscriptionService.createUserSubscription(
-      user,
-      subscribeUserDto,
-    );
-  }
+  // @Post('create-user-subscription')
+  // createUserSubscription(
+  //   @Body() subscribeUserDto: SubscribeUserDto,
+  //   @CurrentUser() user,
+  // ) {
+  //   return this.subscriptionService.createUserSubscription(
+  //     user,
+  //     subscribeUserDto,
+  //   );
+  // }
 
   @Get('get-my-subscription')
   getMySubscription(@CurrentUser() user, @Query() pagination: PaginationDto) {

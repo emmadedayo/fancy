@@ -2,6 +2,8 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
+  IsNumberString,
   IsOptional,
   IsPhoneNumber,
   IsString,
@@ -75,4 +77,18 @@ export class BankValidatorDto {
   @IsString()
   @IsNotEmpty()
   bank_code: string;
+}
+
+export class SubscriptionSettings {
+  @IsNumberString()
+  @IsNotEmpty()
+  bts_price: number;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  call_per_minute_price: number;
+
+  @IsString()
+  @IsNotEmpty()
+  user_id: string;
 }

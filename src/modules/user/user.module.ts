@@ -9,6 +9,8 @@ import { UserAdminService } from './user-admin.service';
 import { PostModule } from '../post/post.module';
 import { PostRepository } from '../post/repos/post-repository';
 import { SubscribeUserRepository } from '../subscription/repo/subscribe-user-repo';
+import { UserSubscriptionSettingsRepository } from './repositories/user_subscription_settings.repository';
+import { UserTransactionRepository } from './repositories/user_transaction.repository';
 
 @Module({
   imports: [PostModule],
@@ -22,6 +24,8 @@ import { SubscribeUserRepository } from '../subscription/repo/subscribe-user-rep
     PayStackService,
     PostRepository,
     SubscribeUserRepository,
+    UserSubscriptionSettingsRepository,
+    UserTransactionRepository,
   ],
 })
 export class UserModule {}

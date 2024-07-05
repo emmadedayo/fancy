@@ -1,22 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { SubscriptionRepository } from './repo/subscription-repo';
 import { SubscribeUserRepository } from './repo/subscribe-user-repo';
-import {
-  CreateSubscriptionDto,
-  SubscribeUserDto,
-} from './dto/subscription.dto';
+import { CreateSubscriptionDto } from './dto/subscription.dto';
 import { BaseResponse } from '../../libs/response/base_response';
 import { SubscriptionEntity } from './entities/subscription.entity';
-import {
-  SubscribeUserEntity,
-  SubscriptionStatus,
-} from './entities/user_subscription.entity';
-import { calculateSubscriptionEndDate } from '../../libs/common/helpers/utils';
+import { SubscriptionStatus } from './entities/user_subscription.entity';
 import { PaginationDto } from '../../libs/pagination/pagination';
 import { MoreThanOrEqual } from 'typeorm';
 import { PayStackService } from '../../libs/payment/paystack/paystack.service';
-import { PaymentType } from '../../libs/payment/payment-type.enum';
-import { UserEntity } from '../user/entity/user.entity';
 
 @Injectable()
 export class SubscriptionService {
@@ -86,54 +77,54 @@ export class SubscriptionService {
     );
   }
 
-  async createUserSubscription(user: UserEntity, data: SubscribeUserDto) {
-    const subscription = await this.subscriptionRepository.findOne({
-      id: data.subscriptionId,
-    });
-    if (!subscription) {
-      return BaseResponse.error(
-        'Subscription not found',
-        null,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    //check of active subscription
-    const activeSubscription = await this.subscribeUserRepository.findOne({
-      user_id: user.id,
-      status: SubscriptionStatus.ACTIVE,
-    });
-    if (activeSubscription) {
-      return BaseResponse.error(
-        'User already has an active subscription',
-        null,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const date = calculateSubscriptionEndDate(new Date(), 1);
-    const dataInsert = {
-      user_id: user.id,
-      subscription_details: subscription,
-      status: SubscriptionStatus.PENDING,
-      expired_at: date,
-    };
-    await this.subscribeUserRepository.save(<SubscribeUserEntity>dataInsert);
-    const payStackResponse = await this.payStackService.initializeTransaction(
-      user.email,
-      subscription.subscription_price * 100,
-      'https://your-callback-url.com',
-      {
-        userId: user.id,
-        paymentType: PaymentType.SUBSCRIPTION,
-        cancel_action: 'https://your-cancel-url.com',
-      },
-    );
-    const authorizationUrl = payStackResponse.data.authorization_url;
-    return BaseResponse.success(
-      { url: authorizationUrl },
-      'User subscribed successfully',
-      HttpStatus.CREATED,
-    );
-  }
+  // async createUserSubscription(user: UserEntity, data: SubscribeUserDto) {
+  //   const subscription = await this.subscriptionRepository.findOne({
+  //     id: data.subscriptionId,
+  //   });
+  //   if (!subscription) {
+  //     return BaseResponse.error(
+  //       'Subscription not found',
+  //       null,
+  //       HttpStatus.NOT_FOUND,
+  //     );
+  //   }
+  //   //check of active subscription
+  //   const activeSubscription = await this.subscribeUserRepository.findOne({
+  //     user_id: user.id,
+  //     status: SubscriptionStatus.ACTIVE,
+  //   });
+  //   if (activeSubscription) {
+  //     return BaseResponse.error(
+  //       'User already has an active subscription',
+  //       null,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   const date = calculateSubscriptionEndDate(new Date(), 1);
+  //   const dataInsert = {
+  //     user_id: user.id,
+  //     subscription_details: subscription,
+  //     status: SubscriptionStatus.PENDING,
+  //     expired_at: date,
+  //   };
+  //   await this.subscribeUserRepository.save(<SubscribeUserEntity>dataInsert);
+  //   const payStackResponse = await this.payStackService.initializeTransaction(
+  //     user.email,
+  //     subscription.subscription_price * 100,
+  //     'https://your-callback-url.com',
+  //     {
+  //       userId: user.id,
+  //       paymentType: PaymentType.SUBSCRIPTION,
+  //       cancel_action: 'https://your-cancel-url.com',
+  //     },
+  //   );
+  //   const authorizationUrl = payStackResponse.data.authorization_url;
+  //   return BaseResponse.success(
+  //     { url: authorizationUrl },
+  //     'User subscribed successfully',
+  //     HttpStatus.CREATED,
+  //   );
+  // }
 
   async getUserSubscription(user_id: string, data: PaginationDto) {
     const pageSize = parseInt(data.page, 10);

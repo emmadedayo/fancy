@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/libs/db/BaseEntity';
 import { UserWallet } from './user_wallet.entity';
+import { UserSubscriptionSettings } from './user_subscription_settings.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -88,6 +89,12 @@ export class UserEntity extends BaseEntity {
   @OneToOne(() => UserWallet, (wallet) => wallet.user, { eager: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
   wallet: UserWallet;
+
+  //relationshipt with UserSubscriptionSettings
+  @OneToOne(() => UserSubscriptionSettings, (settings) => settings.user, {
+    eager: true,
+  })
+  settings: UserSubscriptionSettings;
 
   //
   toJwtPayload() {

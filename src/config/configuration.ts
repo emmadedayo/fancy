@@ -20,6 +20,9 @@ class Configuration {
   readonly SEND_POST_NOTIFICATION = 'send-post-notification';
 
   @IsString()
+  readonly POST_PAY = 'post-pay';
+
+  @IsString()
   readonly SEND_LIKE_NOTIFICATION = 'send-like-notification';
 
   @IsString()

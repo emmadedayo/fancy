@@ -27,8 +27,8 @@ export class SubscribeUserEntity extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ name: 'subscription_details', type: 'json', nullable: false })
-  subscription_details: any; // You might want to create a specific type for this later
+  @Column({ name: 'amount', type: 'json', nullable: false })
+  amount: number;
 
   @Column({
     type: 'enum',

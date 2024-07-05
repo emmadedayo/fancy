@@ -20,6 +20,7 @@ import { UserEntity } from '../user/entity/user.entity';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
 import { PostPaidRepository } from './repos/post-paid-repository';
+import { UserTransactionRepository } from '../user/repositories/user_transaction.repository';
 
 @Injectable()
 export class PostService {
@@ -33,6 +34,7 @@ export class PostService {
     private readonly postBooMarkRepository: PostBooMarkRepository,
     private readonly userFollowerRepository: UserFollowerRepository,
     private readonly userRepository: UserRepository,
+    private readonly userSubscriptionRepository: UserTransactionRepository,
     private readonly userWalletRepository: UserWalletRepository,
     private readonly postPaidViewRepository: PostPaidRepository,
     @InjectQueue(Config.SEND_POST_NOTIFICATION)
@@ -40,6 +42,8 @@ export class PostService {
     @InjectQueue(Config.SEND_LIKE_NOTIFICATION)
     private readonly postNotificationLikeQueue: Queue,
     @InjectQueue(Config.SEND_LIKE_NOTIFICATION)
+    private readonly postPayQuery: Queue,
+    @InjectQueue(Config.POST_PAY)
     private readonly postNotificationCommentQueue: Queue,
   ) {}
 
@@ -345,17 +349,7 @@ export class PostService {
       throw new HttpException('Insufficient balance', 400);
     }
 
-    // Deduct the amount from user's balance
-    user_details.balance -= Number(post.tips_amount);
-    await this.userWalletRepository.save(user_details);
-
-    // Save the paid view
-    await this.postPaidViewRepository.save({
-      post_id: postId,
-      user_id: user.id,
-      amount: Number(post.tips_amount),
-      initial_amount: Number(post.tips_amount),
-    });
+    await this.postPayQuery.add({ post, user });
 
     return BaseResponse.success(null, 'Payment successful');
   }

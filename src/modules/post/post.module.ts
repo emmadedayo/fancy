@@ -15,7 +15,9 @@ import { PostNotification } from './queue/post-notifiication-queue';
 import { UserRepository } from '../user/repositories/user.repository';
 import { PostLikeConsumerNotification } from './queue/post-like-consumer';
 import { PostPaidRepository } from './repos/post-paid-repository';
-import { UserWalletRepository } from "../user/repositories/user_wallet.repository";
+import { UserWalletRepository } from '../user/repositories/user_wallet.repository';
+import { PostPayQueue } from './queue/post-pay-queue';
+import { UserTransactionRepository } from "../user/repositories/user_transaction.repository";
 
 @Module({
   imports: [
@@ -27,6 +29,9 @@ import { UserWalletRepository } from "../user/repositories/user_wallet.repositor
     }),
     BullModule.registerQueue({
       name: Config.SEND_COMMENT_NOTIFICATION,
+    }),
+    BullModule.registerQueue({
+      name: Config.POST_PAY,
     }),
   ],
   controllers: [PostController],
@@ -44,7 +49,9 @@ import { UserWalletRepository } from "../user/repositories/user_wallet.repositor
     PostNotification,
     PostLikeConsumerNotification,
     UserRepository,
-    UserWalletRepository
+    UserWalletRepository,
+    UserTransactionRepository,
+    PostPayQueue,
   ],
 })
 export class PostModule {}

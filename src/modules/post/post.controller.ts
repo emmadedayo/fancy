@@ -104,10 +104,7 @@ export class PostController {
   }
 
   @Put('pay/:id')
-  payForPost(
-    @CurrentUser() userId: any,
-    @Param('id') postId: string,
-  ) {
+  payForPost(@CurrentUser() userId: any, @Param('id') postId: string) {
     return this.postService.payForPost(userId, postId);
   }
 }

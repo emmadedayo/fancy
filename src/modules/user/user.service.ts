@@ -5,6 +5,7 @@ import {
   BankDetailsDto,
   BankValidatorDto,
   FollowerRequestDto,
+  SubscriptionSettings,
   UpdateUserDto,
 } from './dto/user.dto';
 import { UserFollowerRepository } from './repositories/user_follower_repository';
@@ -13,6 +14,7 @@ import { PayStackService } from '../../libs/payment/paystack/paystack.service';
 import { PostRepository } from '../post/repos/post-repository';
 import { SubscribeUserRepository } from '../subscription/repo/subscribe-user-repo';
 import { SubscriptionStatus } from '../subscription/entities/user_subscription.entity';
+import { UserSubscriptionSettingsRepository } from './repositories/user_subscription_settings.repository';
 
 @Injectable()
 export class UserService {
@@ -22,6 +24,7 @@ export class UserService {
     private readonly payStackService: PayStackService,
     private readonly postRepository: PostRepository,
     private readonly subscribeUserRepository: SubscribeUserRepository,
+    private readonly userSubscriptionSettingsRepository: UserSubscriptionSettingsRepository,
   ) {}
 
   async getMe(userId: string) {
@@ -315,5 +318,21 @@ export class UserService {
       `Account ${newIsAvailableForCallState ? 'made available for call' : 'made unavailable for call'} successfully`,
       HttpStatus.OK,
     );
+  }
+
+  async updateSubscriptionSettings(userId: string, data: SubscriptionSettings) {
+    //save or update subscription settings
+    const subscriptionSettings =
+      await this.userSubscriptionSettingsRepository.findOne({
+        user_id: userId,
+      });
+    if (subscriptionSettings) {
+      await this.userSubscriptionSettingsRepository.update(
+        { user_id: userId },
+        data,
+      );
+    } else {
+      await this.userSubscriptionSettingsRepository.save(data);
+    }
   }
 }

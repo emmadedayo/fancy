@@ -15,6 +15,7 @@ import {
   BankDetailsDto,
   BankValidatorDto,
   FollowerRequestDto,
+  SubscriptionSettings,
   UpdateUserDto,
 } from './dto/user.dto';
 import { UserAdminService } from './user-admin.service';
@@ -134,5 +135,13 @@ export class UserController {
   @Get('get-user-posts/:id')
   getUserPosts(@Param('id') id: string, @Query() data: PaginationDto) {
     return this.userService.getUserPosts(id, data);
+  }
+
+  @Post('update-subscription-settings')
+  updateSubscriptionSettings(
+    @CurrentUser() user: any,
+    @Body() data: SubscriptionSettings,
+  ) {
+    return this.userService.updateSubscriptionSettings(user.id, data);
   }
 }

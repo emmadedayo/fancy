@@ -16,6 +16,9 @@ export class UserWallet extends BaseEntity {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   balance: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  earn_balance: number;
+
   @Column()
   user_id: string;
 
