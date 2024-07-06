@@ -92,8 +92,9 @@ export class UserEntity extends BaseEntity {
 
   //relationshipt with UserSubscriptionSettings
   @OneToOne(() => UserSubscriptionSettings, (settings) => settings.user, {
-    eager: true,
+    eager: false,
   })
+  @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
   settings: UserSubscriptionSettings;
 
   //
