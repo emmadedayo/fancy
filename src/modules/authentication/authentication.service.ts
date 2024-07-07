@@ -205,9 +205,9 @@ export class AuthenticationService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const access_token = this.jwtService.sign({ sub: user });
+    const accessToken = this.jwtService.sign({ sub: user }, { expiresIn: null });
     return BaseResponse.success(
-      { user, access_token },
+      { user, accessToken },
       'Login successful',
       HttpStatus.OK,
     );
