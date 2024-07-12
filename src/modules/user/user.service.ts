@@ -259,7 +259,7 @@ export class UserService {
       );
     }
     return BaseResponse.success(
-      data['data'],
+      res['data'],
       'Bank code validated successfully',
       HttpStatus.OK,
     );
@@ -321,7 +321,6 @@ export class UserService {
   }
 
   async updateSubscriptionSettings(userId: string, data: SubscriptionSettings) {
-    //save or update subscription settings
     const subscriptionSettings =
       await this.userSubscriptionSettingsRepository.findOne({
         user_id: userId,

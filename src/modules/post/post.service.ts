@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PostRepository } from './repos/post-repository';
 import { PostImageRepository } from './repos/post-image-repository';
 import { PostViewRepository } from './repos/post-view-repository';
@@ -352,5 +352,34 @@ export class PostService {
     await this.postPayQuery.add({ post, user });
 
     return BaseResponse.success(null, 'Payment successful');
+  }
+
+  async searchPost(data: PaginationDto) {
+    const pageSize = parseInt(data.limit, 10) || 10;
+    const currentPage = parseInt(data.page, 10) || 1;
+    const columns = ['caption']; // Customize columns to search
+    const entityName = 'post';
+    const users = await this.postRepository.search(
+      data.keywords,
+      columns,
+      entityName,
+      pageSize,
+      currentPage,
+    );
+    return BaseResponse.success(
+      users,
+      'Users fetched successfully',
+      HttpStatus.OK,
+    );
+  }
+
+  async getPostById(postId: string) {
+    const post = await this.postRepository.findOne(
+      { id: postId },
+      { images: true },
+    );
+    //delete password from user
+    delete post.user.password;
+    return BaseResponse.success(post, 'Post fetched successfully');
   }
 }

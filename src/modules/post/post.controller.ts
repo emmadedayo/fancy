@@ -107,4 +107,14 @@ export class PostController {
   payForPost(@CurrentUser() userId: any, @Param('id') postId: string) {
     return this.postService.payForPost(userId, postId);
   }
+
+  @Get('search')
+  searchPost(@Query() data: PaginationDto) {
+    return this.postService.searchPost(data);
+  }
+
+  @Get('get-post/:id')
+  getPostById(@Param('id') postId: string) {
+    return this.postService.getPostById(postId);
+  }
 }

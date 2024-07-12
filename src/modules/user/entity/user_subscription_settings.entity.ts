@@ -1,9 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { BaseEntity } from '../../../libs/db/BaseEntity';
 
@@ -12,8 +7,8 @@ export class UserSubscriptionSettings extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @Column('uuid')
-  user_id: string;
+  @Column()
+  user_id?: string;
 
   @Column()
   bts_price: number;

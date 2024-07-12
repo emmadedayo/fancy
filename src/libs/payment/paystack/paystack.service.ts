@@ -66,19 +66,16 @@ export class PayStackService {
     const headers = {
       Authorization: `Bearer ${this.secretKey}`,
     };
-
+    const url = `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`;
     try {
-      const response = await axios.get(
-        `https://api.paystack.co/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
-        { headers },
-      );
+      const response = await axios.get(url, { headers });
       return response.data;
     } catch (error) {
       return BaseResponse.error(
         error.response?.data ||
           'An error occurred while validating the account',
         null,
-        error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        error.response?.status,
       );
     }
   }

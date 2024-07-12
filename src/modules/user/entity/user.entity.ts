@@ -90,7 +90,7 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
   wallet: UserWallet;
 
-  //relationshipt with UserSubscriptionSettings
+  //relationship with UserSubscriptionSettings
   @OneToOne(() => UserSubscriptionSettings, (settings) => settings.user, {
     eager: false,
   })

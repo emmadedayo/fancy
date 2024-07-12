@@ -112,14 +112,14 @@ export class UserController {
     return this.userAdminService.disableCreator(id);
   }
 
-  @Put('update-bank/:id')
-  updateBankDetails(@Param('id') id: string, @Body() data: BankDetailsDto) {
-    return this.userService.updateBankDetails(id, data);
+  @Post('update-bank')
+  updateBankDetails(@CurrentUser() user: any, @Body() data: BankDetailsDto) {
+    return this.userService.updateBankDetails(user.id, data);
   }
 
-  @Put('make-account-private/:id')
-  makeAccountPrivate(@Param('id') id: string) {
-    return this.userService.makeAccountPrivate(id);
+  @Post('make-account-private')
+  makeAccountPrivate(@CurrentUser() user: any) {
+    return this.userService.makeAccountPrivate(user.id);
   }
 
   @Put('is_available_for_call/:id')
@@ -143,5 +143,10 @@ export class UserController {
     @Body() data: SubscriptionSettings,
   ) {
     return this.userService.updateSubscriptionSettings(user.id, data);
+  }
+
+  @Post('is_available_for_call')
+  isAccountAvailableForCall(@CurrentUser() user: any) {
+    return this.userService.isAccountAvailableForCall(user.id);
   }
 }
