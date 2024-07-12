@@ -334,5 +334,11 @@ export class UserService {
     } else {
       await this.userSubscriptionSettingsRepository.save(data);
     }
+
+    return BaseResponse.success(
+      null,
+      `Subscription settings updated successfully`,
+      HttpStatus.OK,
+    );
   }
 }
