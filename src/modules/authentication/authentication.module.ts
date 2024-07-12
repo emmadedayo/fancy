@@ -13,7 +13,7 @@ import { UpdateUserConsumer } from './consumer/update-user.consumer';
   imports: [
     JwtModule.register({
       secret: Config.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '3457d' },
     }),
     BullModule.registerQueue({
       name: Config.CREATE_USER_QUEUE,
