@@ -28,7 +28,6 @@ export class UserService {
   ) {}
 
   async getMe(userId: string) {
-    console.log('userId', userId);
     const user = await this.userRepository.findOne(
       { id: userId },
       { settings: true, wallet: true },

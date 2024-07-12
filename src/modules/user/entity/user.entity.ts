@@ -86,12 +86,14 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'deleted_at' })
   deletedAt: Date;
 
-  @OneToOne(() => UserWallet, (wallet) => wallet.user, { eager: false })
+  @OneToOne(() => UserWallet, (wallet) => wallet.user, { eager: true })
   @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
   wallet: UserWallet;
 
   //relationship with UserSubscriptionSettings
-  @OneToOne(() => UserSubscriptionSettingEntity, (settings) => settings.user, { cascade: true })
+  @OneToOne(() => UserSubscriptionSettingEntity, (settings) => settings.user, {
+    cascade: true,
+  })
   settings: UserSubscriptionSettingEntity;
 
   //
