@@ -1,14 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne } from "typeorm";
 import { UserEntity } from './user.entity';
 import { BaseEntity } from '../../../libs/db/BaseEntity';
 
 @Entity('user_subscription_settings')
-export class UserSubscriptionSettings extends BaseEntity {
+export class UserSubscriptionSettingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @Column()
-  user_id?: string;
+  @Column({ name: 'user_id' })
+  userId?: string;
 
   @Column()
   bts_price: number;
@@ -16,6 +16,7 @@ export class UserSubscriptionSettings extends BaseEntity {
   @Column()
   call_per_minute_price: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
+  @OneToOne(() => UserEntity, (user) => user.settings, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
   user?: UserEntity;
 }

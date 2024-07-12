@@ -90,5 +90,5 @@ export class SubscriptionSettings {
 
   @IsString()
   @IsNotEmpty()
-  user_id: string;
+  userId: string;
 }

@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/libs/db/BaseEntity';
 import { UserWallet } from './user_wallet.entity';
-import { UserSubscriptionSettings } from './user_subscription_settings.entity';
+import { UserSubscriptionSettingEntity } from './user_subscription_settings.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -86,16 +86,13 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'deleted_at' })
   deletedAt: Date;
 
-  @OneToOne(() => UserWallet, (wallet) => wallet.user, { eager: true })
+  @OneToOne(() => UserWallet, (wallet) => wallet.user, { eager: false })
   @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
   wallet: UserWallet;
 
   //relationship with UserSubscriptionSettings
-  @OneToOne(() => UserSubscriptionSettings, (settings) => settings.user, {
-    eager: false,
-  })
-  @JoinColumn({ name: 'id', referencedColumnName: 'user_id' })
-  settings: UserSubscriptionSettings;
+  @OneToOne(() => UserSubscriptionSettingEntity, (settings) => settings.user, { cascade: true })
+  settings: UserSubscriptionSettingEntity;
 
   //
   toJwtPayload() {

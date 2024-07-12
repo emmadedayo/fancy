@@ -28,9 +28,10 @@ export class UserService {
   ) {}
 
   async getMe(userId: string) {
+    console.log('userId', userId);
     const user = await this.userRepository.findOne(
       { id: userId },
-      { wallet: true },
+      { settings: true, wallet: true },
     );
     const countFollowers = await this.userFollowerRepository.countWhere({
       followingId: userId,
@@ -323,11 +324,11 @@ export class UserService {
   async updateSubscriptionSettings(userId: string, data: SubscriptionSettings) {
     const subscriptionSettings =
       await this.userSubscriptionSettingsRepository.findOne({
-        user_id: userId,
+        userId: userId,
       });
     if (subscriptionSettings) {
       await this.userSubscriptionSettingsRepository.update(
-        { user_id: userId },
+        { userId: userId },
         data,
       );
     } else {
