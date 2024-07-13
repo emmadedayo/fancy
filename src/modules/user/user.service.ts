@@ -30,7 +30,7 @@ export class UserService {
   async getMe(userId: string) {
     const user = await this.userRepository.findOne(
       { id: userId },
-      { settings: true, wallet: true },
+      { settings: true },
     );
     const countFollowers = await this.userFollowerRepository.countWhere({
       followingId: userId,
@@ -219,16 +219,12 @@ export class UserService {
   }
 
   async searchUser(data: PaginationDto) {
-    const pageSize = parseInt(data.limit, 10) || 10;
-    const currentPage = parseInt(data.page, 10) || 1;
     const columns = ['name', 'username']; // Customize columns to search
     const entityName = 'users';
-    const users = await this.userRepository.search(
+    const users = await this.userRepository.searchWithOutPagination(
       data.keywords,
       columns,
       entityName,
-      pageSize,
-      currentPage,
     );
     return BaseResponse.success(
       users,

@@ -282,6 +282,31 @@ export abstract class AbstractRepo<T extends BaseEntity> {
     }
   }
 
+
+  async searchWithOutPagination(
+    keyword: string,
+    columns: string[],
+    entityName: string
+  ) {
+    try {
+      const queryBuilder = readConnection
+        .getRepository(this.entityTarget)
+        .createQueryBuilder(entityName);
+
+      const whereConditions = columns.map(
+        (column) => `${entityName}.${column} LIKE :term`,
+      );
+
+      const [data] = await queryBuilder
+        .where(`(${whereConditions.join(' OR ')})`, { term: `%${keyword}%` })
+        .getManyAndCount();
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async count() {
     try {
       const res = await readConnection.getRepository(this.entityTarget).count();
